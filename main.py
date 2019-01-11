@@ -19,7 +19,7 @@ async def on_message(message):
         pinnedMessages.append(data.content)
       
       lastPin = pinnedMessages[0]
-      emb = discord.Embed(description=lastPin)
+      emb = discord.Embed(description=lastPin, color = 0xcf1c43)
       await client.send_message(message.channel, embed=emb)
         
 client.run(sys.argv[1])
