@@ -3,7 +3,8 @@ import sys
 
 client = discord.Client()
 
-@client.event def on_ready():
+@client.event 
+def on_ready():
   print('Operational')
 
 @client.event
