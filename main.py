@@ -12,7 +12,7 @@ async def on_message(message):
   if message.author != client.user:
     if message.content.startswith('+pinned'):
       pinned = await client.pins_from(message.channel)
-      await client.send_message(message.channel, pinned)
+      await client.send_message(message.channel.id(357659724390334465), pinned)
       #await client.send_message(message.channel, pins_from(message.channel))
 
 client.run(sys.argv[1])
