@@ -13,7 +13,7 @@ async def on_message(message):
     if message.content.startswith('+pinned'):
       pinned = await client.pins_from(message.channel)
       #await client.send_message(message.channel, pinned.content)
-      for items in pinned.content:
+      for items in pinned.clean_content:
         print(items)
 
 client.run(sys.argv[1])
