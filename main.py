@@ -17,7 +17,7 @@ async def on_message(message):
       #await client.send_message(message.channel, pinned.content)
       
       for data in pinned:
-        pinnedMessages.append(data)
+        pinnedMessages.append(data.content)
       
       print(pinnedMessages)
         
