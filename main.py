@@ -16,7 +16,7 @@ async def on_message(message):
       #await client.send_message(message.channel, pinned.content)
       
       for message in lastPin:
-        print(message.content)
+        await client.send_message(message.channel, message.content)
 
 client.run(sys.argv[1])
 client.close()
