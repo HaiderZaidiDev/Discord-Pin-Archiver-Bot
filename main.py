@@ -19,7 +19,7 @@ async def on_message(message):
         pinnedMessages.append(data.content)
       
 
-      print(last_pin[-1])
+      print(pinnedMessages[-1])
         
 client.run(sys.argv[1])
 client.close()
