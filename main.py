@@ -14,7 +14,8 @@ async def on_message(message):
       pinned = list(await client.pins_from(message.channel))
       #await client.send_message(message.channel, pinned.content)
       
-      print(pinned)
+      for message in pinned[-1]:
+        print(message.content)
 
 client.run(sys.argv[1])
 client.close()
