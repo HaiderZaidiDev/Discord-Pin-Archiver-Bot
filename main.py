@@ -8,7 +8,7 @@ async def on_ready():
   print('Operational')
 
 @client.event
-async def on_message(message, -1):
+async def on_message(message):
   pinnedMessages = []
   if message.author != client.user:
     if message.content.startswith('+pinned'):
