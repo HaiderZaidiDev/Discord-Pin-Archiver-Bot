@@ -12,11 +12,11 @@ async def on_message(message):
   if message.author != client.user:
     if message.content.startswith('+pinned'):
       pinned = list(await client.pins_from(message.channel))
-      lastPin = pinned[-1]
       #await client.send_message(message.channel, pinned.content)
       
       for data in pinned:
-        await client.send_message(message.channel, data.content)
+        lastPin = data[-1]
+        await client.send_message(message.channel, lastPin.content)
 client.run(sys.argv[1])
 client.close()
   
