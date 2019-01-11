@@ -18,8 +18,9 @@ async def on_message(message):
       for data in pinned:
         pinnedMessages.append(data.content)
       
-      last_pin = pinnedMessages[0]
-      print(last_pin)
+      lastPin = pinnedMessages[0]
+      emb = discord.Embed(description=lastPin)
+      await client.send_message(message.channel, emb=embed)
         
 client.run(sys.argv[1])
 client.close()
