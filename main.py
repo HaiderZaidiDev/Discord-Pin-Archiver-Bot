@@ -15,7 +15,7 @@ async def on_message(message):
       #await client.send_message(message.channel, pinned.content)
       
       for data in pinned:
-        lastPin = data[-1]
+        lastPin = data.values[-1]
         await client.send_message(message.channel, lastPin.content)
 client.run(sys.argv[1])
 client.close()
