@@ -11,8 +11,8 @@ async def on_ready():
 async def on_message(message):
   if message.author != client.user:
     if message.content.startswith('+pinned'):
-      pinned = await client.pins_from(message.channel.id(357659724390334465))
-      print(pinned)
+      pinned = await client.pins_from(message.channel)
+      await cliend.send_message(message.channel, pinned)
       #await client.send_message(message.channel, pins_from(message.channel))
 
 client.run(sys.argv[1])
