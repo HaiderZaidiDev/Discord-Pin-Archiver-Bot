@@ -11,6 +11,7 @@ async def on_ready():
 async def on_message(message):
   if message.author != client.user:
     if message.content.startswith('+lastpin'):
+      print(message.author.name)
       pinnedMessages = []
       pinned = list(await client.pins_from(message.channel))
 
