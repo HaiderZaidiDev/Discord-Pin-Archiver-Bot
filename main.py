@@ -12,7 +12,7 @@ async def on_message(message):
   if message.author != client.user:
     if message.content.startswith('+lastpin'):
       pinnedMessages = []
-      pinned = list(await client.pins_from(message.channel).message.)
+      pinned = list(await client.pins_from(message.channel))
 
       
       for data in pinned:
