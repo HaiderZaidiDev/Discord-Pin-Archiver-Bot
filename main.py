@@ -9,9 +9,9 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-  pinnedMessages = []
   if message.author != client.user:
     if message.content.startswith('+lastpin'):
+      pinnedMessages = []
       pinned = list(await client.pins_from(message.channel))
 
       
@@ -23,6 +23,7 @@ async def on_message(message):
       await client.send_message(message.channel, embed=emb)
     
     if message.content.startswith('+pinned'):
+      pinnedMessages = []
       pinned = list(await client.pins_from(message.channel))
 
       for data in pinned:
