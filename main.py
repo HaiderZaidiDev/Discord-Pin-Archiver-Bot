@@ -23,7 +23,6 @@ async def on_message(message):
       await client.send_message(message.channel, embed=emb)
     
     if message.content.startswith('+pinned'):
-      print(client.channel.name)
       pinnedMessages = []
       pinned = list(await client.pins_from(message.channel))
 
