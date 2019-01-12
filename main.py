@@ -30,9 +30,10 @@ async def on_message(message):
         pinnedMessages.append(data.content)
       
       desc=''
-      for i in range(0, len(pinnedMessages), 1)
-        desc+= pins 
-        emb = discord.Embed(description=desc, color = 0xcf1c43)
+      for pins in pinnedMessages:
+        desc+= pins  
+      
+      emb = discord.Embed(description=desc, color = 0xcf1c43)
       await client.send_message(message.channel, embed=emb)
         
         
