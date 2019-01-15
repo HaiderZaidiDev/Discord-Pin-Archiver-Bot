@@ -14,8 +14,8 @@ async def on_message(message): # The following code is executed with parameter a
       pinnedMessages = [] # Creates empty list.
       pinned = list(await client.pins_from(message.channel)) # List of pins as objects. 
       
-      for members in client.server.members:
-        print(members)
+      for members in server.members:
+        print(members.content)
    
       for data in pinned: # Accesses list pinned with iterator data.
         pinnedMessages.append(data.content) # Appends the content of data to list pinnedMessages (converts obj in list to str)
