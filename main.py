@@ -26,27 +26,21 @@ async def on_message(message): # The following code is executed with parameter a
       await client.send_message(message.channel, embed=emb) # Outputs message.
     
     if message.content.startswith('+pinned'): # If the message starts with +pinned, the following code is executed.
-      pinnedMessages = [] # Creates empty list. 
       pinned = list(await client.pins_from(message.channel)) # List of pins as objects.
 
       for data in pinned: # Accesses list pinned with iterator data.
-        pinnedMessages.append(data.content)# Appends the content of data to list pinnedMessages (converts obj in list to str)
-        
         if data.content not in savedPins:
-          savedPins.append(data.content)
+          savedPins.append(data.content)# Appends the content of data to list pinnedMessages (converts obj in list to str)
       
 
       desc='__**Pinned Messages in #{}:**__ \n \n'.format(message.channel.name) # Creates variable desc, assigned with header of pinned messages.
-      for pins in pinnedMessages: # Accesses list pinnedMessages with iterator pinned.
+      for pins in savedPins: # Accesses list pinnedMessages with iterator pinned.
         desc+= pins + '\n \n'  # Adds pinned messages to desc.
       
       emb = discord.Embed(description=desc, color = 0xcf1c43) # Embed for all pinned messages in current channel.
       await client.send_message(message.channel, embed=emb) # Outputs all pinned messages in current channel.
      
-    if message.content.startswith('+saved'):
-      for data in savedPins:
-        await client.send_message(message.channel, data)
-        
+
         
       
       
