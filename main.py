@@ -42,6 +42,10 @@ async def on_message(message): # The following code is executed with parameter a
       
       emb = discord.Embed(description=desc, color = 0xcf1c43) # Embed for all pinned messages in current channel.
       await client.send_message(message.channel, embed=emb) # Outputs all pinned messages in current channel.
+     
+    if message.content.startswith('+saved'):
+      for data in savedPins:
+        await client.send_message(message.channel, data)
         
         
       
