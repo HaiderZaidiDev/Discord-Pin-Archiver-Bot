@@ -14,12 +14,15 @@ async def on_message(message): # The following code is executed with parameter a
   if message.author != client.user: # If the message is **not from a bot, the following code is executed.
     if message.content.startswith('+lastpin'): # If the message starts with +lastpin
       pinnedMessages = [] # Creates empty list.
+      authorNames = []
       pinned = list(await client.pins_from(message.channel)) # List of pins as objects. 
       
       messageObj = list(await client.get_message(message.channel, '534554680005623828'))
       
       for ids in messageObj:
-        print(message.author.content)
+        authorNames.append(ids.author.content)
+      
+      print(authorNames[0])
    
       for data in pinned: # Accesses list pinned with iterator data.
         pinnedMessages.append(data.content) # Appends the content of data to list pinnedMessages (converts obj in list to str)
