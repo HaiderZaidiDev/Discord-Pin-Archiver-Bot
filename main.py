@@ -21,7 +21,7 @@ async def on_message(message): # The following code is executed with parameter a
         pinnedMessages.append(data.content) # Appends the content of data to list pinnedMessages (converts obj in list to str)
       
       lastPin = pinnedMessages[0] # Last pinned message in pinnedMessages (The list of pinned messages is ordered newest - oldest)
-      emb = discord.Embed(description= '__**Last Pinned Message in #{}**__: \n \n'.format(client.channel.name) + lastPin, color = 0xcf1c43) # Embed for last pinned message.
+      emb = discord.Embed(description= '__**Last Pinned Message in #{}**__: \n \n'.format(message.channel.name) + lastPin, color = 0xcf1c43) # Embed for last pinned message.
       await client.send_message(message.channel, embed=emb) # Outputs message.
     
     if message.content.startswith('+pinned'): # If the message starts with +pinned, the following code is executed.
