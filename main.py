@@ -19,7 +19,7 @@ async def on_message(message): # The following code is executed with parameter a
       messageObj = await client.get_message(message.channel, '534554680005623828')
       
       for ids in messageObj:
-        print(message.author)
+        print(message.author.content)
    
       for data in pinned: # Accesses list pinned with iterator data.
         pinnedMessages.append(data.content) # Appends the content of data to list pinnedMessages (converts obj in list to str)
