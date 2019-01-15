@@ -32,7 +32,7 @@ async def on_message(message): # The following code is executed with parameter a
       for data in pinned: # Accesses list pinned with iterator data.
         pinnedMessages.append(data.content)# Appends the content of data to list pinnedMessages (converts obj in list to str)
         
-        if data.contnet not in savedPins:
+        if data.content not in savedPins:
           savedPins.append(data.content)
       
 
