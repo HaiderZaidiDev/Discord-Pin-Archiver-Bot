@@ -16,10 +16,11 @@ async def on_message(message): # The following code is executed with parameter a
       pinnedMessages = [] # Creates empty list.
       pinned = list(await client.pins_from(message.channel)) # List of pins as objects. 
       
-      messageObj = await client.get_message(message.channel, '534554680005623828')
+      messageObj = list(await client.get_message(message.channel, '534554680005623828')
+      author = message.author
       
       for ids in messageObj:
-        print(message.author.content)
+        print(author.content)
    
       for data in pinned: # Accesses list pinned with iterator data.
         pinnedMessages.append(data.content) # Appends the content of data to list pinnedMessages (converts obj in list to str)
