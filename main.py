@@ -31,7 +31,7 @@ async def on_message(message): # The following code is executed with parameter a
       for data in pinned: # Accesses list pinned with iterator data.
         pinnedMessages.append(data.content)# Appends the content of data to list pinnedMessages (converts obj in list to str)
       
-      desc='__**Pinned Messages in #{}:**__ \n \n'.format(client.channel.name) # Creates variable desc, assigned with header of pinned messages.
+      desc='__**Pinned Messages in #{}:**__ \n \n'.format(message.channel.name) # Creates variable desc, assigned with header of pinned messages.
       for pins in pinnedMessages: # Accesses list pinnedMessages with iterator pinned.
         desc+= pins + '\n \n'  # Adds pinned messages to desc.
       
