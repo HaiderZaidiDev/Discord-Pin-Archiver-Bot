@@ -18,8 +18,10 @@ async def on_message(message): # The following code is executed with parameter a
       pinnedAvatars = [message.author.avatar_url for message in x]
       pinnedContent = [message.content for message in x]
       
+      print(pinnedAvatars)
+      
       emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43)
-      emb.set_author(name=pinnedNames[0], url=pinnedAvatars[0])
+      emb.set_author(name=pinnedNames[0])
       await client.send_message(message.channel, embed=emb) # Outputs message.
     
     if message.content.startswith('+pinned'): # If the message starts with +pinned, the following code is executed.
