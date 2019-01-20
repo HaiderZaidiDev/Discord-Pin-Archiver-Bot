@@ -16,7 +16,7 @@ async def on_message(message): # The following code is executed with parameter a
       x = await client.pins_from(message.channel)
       pinnedNames = [message.author.name for message in x]
       pinnedAvatars = [message.author.avatar_url for message in x]
-      pinnedContent = [message.author.content for message in x]
+      pinnedContent = [message.content for message in x]
       
       emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43)
       emb.set_author(name=pinnedNames[0], url=pinnedAvatars[0])
