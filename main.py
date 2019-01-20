@@ -14,9 +14,13 @@ async def on_message(message): # The following code is executed with parameter a
   if message.author != client.user: # If the message is **not from a bot, the following code is executed.
     if message.content.startswith('+lastpins'): # If the message starts with +lastpin
       x = await client.pins_from(message.channel)
-      pinnedName = [message.author.name for message in x]
-      print(pinnedName)
-      await client.send_message(message.channel, pinnedName) # Outputs message.
+      pinnedNames = [message.author.name for message in x]
+      pinnedAvatars = [message.author.avatar_url for message in x]
+      pinnedContent = [message.author.content for message in x]
+      
+      emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43)
+      emb.set_author(name=pinnedNames[0], url=pinnedAvatars[0])
+      await client.send_message(message.channel, embed=emb) # Outputs message.
     
     if message.content.startswith('+pinned'): # If the message starts with +pinned, the following code is executed.
       pinned = list(await client.pins_from(message.channel)) # List of pins as objects.
