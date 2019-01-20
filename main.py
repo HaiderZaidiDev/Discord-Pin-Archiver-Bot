@@ -14,8 +14,9 @@ async def on_message(message): # The following code is executed with parameter a
   if message.author != client.user: # If the message is **not from a bot, the following code is executed.
     if message.content.startswith('+lastpins'): # If the message starts with +lastpin
       x = await client.pins_from(message.channel)
-      pinned = [message.content for message in x]
-      print(pinned[0].author.name)
+      pinnedName = [message.author.name for message in x]
+      print(pinnedName)
+      
       
       
       lastPin = pinnedMessages[0] # Last pinned message in pinnedMessages (The list of pinned messages is ordered newest - oldest)
