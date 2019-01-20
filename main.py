@@ -26,7 +26,7 @@ async def on_message(message): # The following code is executed with parameter a
       if normalTime.startswith('0'):
         normalTime = normalTime[1:5] + 'AM'
       
-      fullTime = normalTime + normalDate
+      fullTime = normalTime + ' - ' + normalDate
         
       
       emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43)
