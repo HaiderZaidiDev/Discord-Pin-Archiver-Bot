@@ -11,12 +11,13 @@ async def on_ready(): # When the bot goes online, the following code is executed
 
 @client.event # On client event.
 async def on_message(message): # The following code is executed with parameter as message.
-  savedPins = []
   if message.author != client.user: # If the message is **not from a bot, the following code is executed.
-    if message.content.startswith('+lastpin'): # If the message starts with +lastpin
+    if message.content.startswith('+lastpins'): # If the message starts with +lastpin
       pinnedMessages = [] # Creates empty list.
       authorNames = []
       pinned = list(await client.pins_from(message.channel)) # List of pins as objects. 
+      lastPinnedData = pinned[0].content
+      print(lastPinendData.message.author.name)
    
       for data in pinned: # Accesses list pinned with iterator data.
         pinnedMessages.append(data.content) # Appends the content of data to list pinnedMessages (converts obj in list to str)
