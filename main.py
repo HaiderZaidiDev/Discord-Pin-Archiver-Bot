@@ -19,19 +19,10 @@ async def on_message(message): # The following code is executed with parameter a
       pinnedContent = [message.content for message in x]
       pinnedMsgTime = [message.timestamp for message in x]
       
-      normalDate = pinnedMsgTime[0][0:10]
-      normalTime = pinnedMsgTime[0][11:16]
-      
-      #--- time detection
-      if normalTime.startswith('0'):
-        normalTime = normalTime[1:5] + 'AM'
-      
-      fullTime = normalTime + ' - ' + normalDate
-        
       
       emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43)
       emb.set_author(name=pinnedNames[0], icon_url=pinnedAvatars[0])
-      emb.set_footer(text=fullTime)
+      emb.set_footer(text=pinnedMsgTime)
       await client.send_message(message.channel, embed=emb) # Outputs message.
     
     if message.content.startswith('+pinned'): # If the message starts with +pinned, the following code is executed.
