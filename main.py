@@ -19,8 +19,8 @@ async def on_message(message): # The following code is executed with parameter a
       pinnedContent = [message.content for message in x]
       pinnedMsgTime = [message.timestamp for message in x]
       
-      normalDate = pinnedMsgTime[0:10]
-      normalTime = pinnedMsgTime[11:16]
+      normalDate = pinnedMsgTime[0][0:10]
+      normalTime = pinnedMsgTime[0][11:16]
       
       #--- time detection
       if normalTime.startswith('0'):
