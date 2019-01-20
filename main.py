@@ -13,13 +13,10 @@ async def on_ready(): # When the bot goes online, the following code is executed
 async def on_message(message): # The following code is executed with parameter as message.
   if message.author != client.user: # If the message is **not from a bot, the following code is executed.
     if message.content.startswith('+lastpins'): # If the message starts with +lastpin
-      pinnedMessages = [] # Creates empty list.
-      authorNames = []
-      pinned = list(await client.pins_from(message.channel)) # List of pins as objects. 
-      print(pinned[0].message.author.name)
-   
-      for data in pinned: # Accesses list pinned with iterator data.
-        pinnedMessages.append(data.content) # Appends the content of data to list pinnedMessages (converts obj in list to str)
+      x = await client.pins_from(message.channel)
+      pinned = [message.content for message in x]
+      print(pinned[0].author.name)
+      
       
       lastPin = pinnedMessages[0] # Last pinned message in pinnedMessages (The list of pinned messages is ordered newest - oldest)
       emb = discord.Embed(description= '__**Last Pinned Message in #{}**__: \n \n'.format(message.channel.name) + lastPin, color = 0xcf1c43) # Embed for last pinned message.
