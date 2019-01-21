@@ -27,7 +27,7 @@ async def on_message(message): # The following code is executed with parameter a
     
 
 @client.event
-async def on_message_edit(before):
+async def on_message_edit():
   print(before)
         
       
