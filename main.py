@@ -17,7 +17,6 @@ async def on_message(message): # The following code is executed with parameter a
       pinnedNames = [message.author.name for message in x]
       pinnedAvatars = [message.author.avatar_url for message in x]
       pinnedContent = [message.content for message in x]
-      pinnedMsgTime = [message.timestamp for message in x]
       
       
       emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43)
@@ -28,7 +27,15 @@ async def on_message(message): # The following code is executed with parameter a
 
 @client.event
 async def on_message_edit(before, after):
-  print(before.content)
+  name = before.author.name
+  avatar = before.author.avatar_url
+  pinContent = before.content
+  msgChannel = before.channel
+  
+  emb = discord.Embed(description = pinContent, color = 0xcf1c43)
+  emb.set_author(name=name, icon_url=avatar)
+  emb.set_footer(text='Sent in # {}'.format(msgChannel))
+  await client.send_message(discord.object(id='536761750242983937'), embed=emb) # Outputs message.
         
       
      
