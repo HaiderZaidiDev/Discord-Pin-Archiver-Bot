@@ -11,7 +11,7 @@ async def on_ready(): # When the bot goes online, the following code is executed
 
 @client.event # On client event.
 async def on_message(message): # The following code is executed with parameter as message.
-  if message.author != client.user: # If the message is **not from a bot, the following code is executed.
+  if message.author != client.user: # If the message is not from a bot, the following code is executed.
     if message.content.startswith('+lastpins'): # If the message starts with +lastpin
       x = await client.pins_from(message.channel)
       pinnedNames = [message.author.name for message in x]
