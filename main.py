@@ -27,7 +27,7 @@ async def on_message(message): # The following code is executed with parameter a
 
 @client.event
 async def on_message_edit(before, after):
-  if before.author != client.user:
+  if before.author != client.user and before.MessageType.pins_add:
     name = before.author.name
     avatar = before.author.avatar_url
     pinContent = before.content
