@@ -39,7 +39,7 @@ async def on_message_edit(before, after):
   
     emb = discord.Embed(description = pinContent, color = 0xcf1c43)
     emb.set_author(name=name, icon_url=avatar)
-    emb.set_footer(text='Sent in # {}'.format(msgChannel))
+    emb.set_footer(text='Sent in **#{}**'.format(msgChannel))
     await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Outputs message.
 
       
