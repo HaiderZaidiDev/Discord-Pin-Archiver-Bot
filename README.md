@@ -4,4 +4,4 @@ Pin Archiver is a Discord bot that was specifically made for the Discord server 
 
 Pin Archiver has the following features:
 * Ability to fetch the last pinned message of the current channel.
-* Ability to clone all pinned messages in the server to a specific channel.
+* Ability to clone all pinned messages in the server to a specified channel.
