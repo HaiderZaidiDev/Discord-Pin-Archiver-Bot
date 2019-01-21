@@ -5,5 +5,5 @@
 * Displays the last pinned message in your current channel.
   * Command: +lastpins
 * Clones all messages that are pinned to a dedication channel in realtime.
- * Usage: This is done automatically. 
+  * Usage: This is done automatically. 
 
