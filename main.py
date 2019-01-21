@@ -27,9 +27,11 @@ async def on_message(message): # The following code is executed with parameter a
 
 @client.event
 async def on_message_edit(before, after):
-  if before.author != client.user:
-    print(before.type)
-    print(str(before.type))
+  print(before.channel)
+  x = await client.pins_from(before.channel)
+  pinnedContent = [message.content for message in x]
+  
+  if before.author != client.user and before.content == pinnedContent[0]:
     name = before.author.name
     avatar = before.author.avatar_url
     pinContent = before.content
