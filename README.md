@@ -5,5 +5,5 @@
 ## Features
 
 * Fetch the last pinned message in channel you're currently in. 
- * Command: +lastpins
+  * Command: +lastpins
  
