@@ -11,18 +11,18 @@ async def on_ready(): # When the bot goes online, the following code is executed
 
 @client.event # On client event.
 async def on_message(message): # The following code is executed with parameter as message.
-  savedPins = []
   if message.author != client.user: # If the message is **not from a bot, the following code is executed.
-    if message.content.startswith('+lastpin'): # If the message starts with +lastpin
-      pinnedMessages = [] # Creates empty list.
-      authorNames = []
-      pinned = list(await client.pins_from(message.channel)) # List of pins as objects. 
-   
-      for data in pinned: # Accesses list pinned with iterator data.
-        pinnedMessages.append(data.content) # Appends the content of data to list pinnedMessages (converts obj in list to str)
+    if message.content.startswith('+lastpins'): # If the message starts with +lastpin
+      x = await client.pins_from(message.channel)
+      pinnedNames = [message.author.name for message in x]
+      pinnedAvatars = [message.author.avatar_url for message in x]
+      pinnedContent = [message.content for message in x]
+      pinnedMsgTime = [message.timestamp for message in x]
       
-      lastPin = pinnedMessages[0] # Last pinned message in pinnedMessages (The list of pinned messages is ordered newest - oldest)
-      emb = discord.Embed(description= '__**Last Pinned Message in #{}**__: \n \n'.format(message.channel.name) + lastPin, color = 0xcf1c43) # Embed for last pinned message.
+      
+      emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43)
+      emb.set_author(name=pinnedNames[0], icon_url=pinnedAvatars[0])
+      emb.set_footer(text=pinnedMsgTime)
       await client.send_message(message.channel, embed=emb) # Outputs message.
 
 @client.event
