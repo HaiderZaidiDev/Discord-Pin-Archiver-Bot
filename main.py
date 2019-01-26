@@ -42,7 +42,7 @@ async def on_message_edit(before, after): # The following code is executed on me
    
     emb = discord.Embed(description = pinContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
     emb.set_author(name=name, icon_url=avatar) # Sets author and avatar url of the author of pinned message.
-    emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
+    emb.set_footer(text= before.created_at +'Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
     await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
 
       
