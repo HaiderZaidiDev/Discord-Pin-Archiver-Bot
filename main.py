@@ -14,10 +14,10 @@ async def on_ready(): # When the bot goes online, the following code is executed
 async def on_message(message): # The following code is executed on message event, parameter message.
   if message.author != client.user: # If the message is not from a bot, the following code is executed.
     if message.content.startswith('+lastpin'): # If a user enters a message starting with +lastpin, the following code is executed.
-      x = await client.pins_from(message.channel) # Returns array of pins as message objects. 
-      pinnedNames = [message.author.name for message in x] # Array of names for message objects in x.
-      pinnedAvatars = [message.author.avatar_url for message in x] # Array of avatar urls for message objects in x.
-      pinnedContent = [message.content for message in x] # Array of message strings for message objects in x.
+      x = await client.pins_from(message.channel) # Returns list of pins as message objects. 
+      pinnedNames = [message.author.name for message in x] # list of names for message objects in x.
+      pinnedAvatars = [message.author.avatar_url for message in x] # list of avatar urls for message objects in x.
+      pinnedContent = [message.content for message in x] # list of message strings for message objects in x.
       
       emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43) # Intilializes embed with description as index 0 of pinnedContent.
       emb.set_author(name=pinnedNames[0], icon_url=pinnedAvatars[0]) # Sets the embeds avatar and name that matches to the corresponding information in x.
@@ -26,8 +26,8 @@ async def on_message(message): # The following code is executed on message event
 
 @client.event
 async def on_message_edit(before, after): # The following code is executed on message edit even (whenever a message is pinned/edited).
-  x = await client.pins_from(before.channel) # Returns array of pins as message objects.
-  pinnedContent = [message.content for message in x] # Array of strings for message objects in x. 
+  x = await client.pins_from(before.channel) # Returns list of pins as message objects.
+  pinnedContent = [message.content for message in x] # list of strings for message objects in x. 
  
   if before.author != client.user and before.content in pinnedContent: # If the message was not sent by a bot, and is the last pinned message in the channel, the following code is executed.
     name = before.author.name # Name as author of message.
