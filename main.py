@@ -29,7 +29,7 @@ async def on_message(message): # The following code is executed on message event
     
     if message.content.startswith('+del'):
       userRoles = [roles for roles in message.author.roles]
-      print(userRoles)
+      print(userRoles[0])
       
       #async for message in client.logs_from(discord.Object(id='536761750242983937'), limit = 1):
         #lastMessage = message
