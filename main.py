@@ -30,7 +30,8 @@ async def on_message(message): # The following code is executed on message event
     if message.content.startswith('+unmaintenance'):
       async for message in client.logs_from(message.channel, limit = 2):
         lastMessage = message.id
-      print(lastMessage)
+      await client.delete_message(lastMessage)
+
       
 
 
