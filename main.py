@@ -28,7 +28,7 @@ async def on_message(message): # The following code is executed on message event
 async def on_message_edit(before, after): # The following code is executed on message edit even (whenever a message is pinned/edited).
   x = await client.pins_from(before.channel) # Returns array of pins as message objects.
   pinnedContent = [message.content for message in x] # Array of strings for message objects in x. 
-  time = before.timestamp.strftime("%A %I, %p")
+  time = before.timestamp.strftime("%b, %d)
   
   if before.author != client.user and before.content == pinnedContent[0]: # If the message was not sent by a bot, and is the last pinned message in the channel, the following code is executed.
     name = before.author.name # Name as author of message.
@@ -38,7 +38,7 @@ async def on_message_edit(before, after): # The following code is executed on me
    
     emb = discord.Embed(description = pinContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
     emb.set_author(name=name, icon_url=avatar) # Sets author and avatar url of the author of pinned message.
-    emb.set_footer(text= str(time) + 'Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
+    emb.set_footer(text= 'Sent on {0} in #{1}'.format(time, msgChannel)) # Sets footer as the channel the message was sent and pinned in.
     await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
 
       
