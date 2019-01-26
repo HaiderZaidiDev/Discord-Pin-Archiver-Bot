@@ -28,7 +28,7 @@ async def on_message(message): # The following code is executed on message event
       #await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
     
     if message.content.startswith('+unmaintenance'):
-      x = async client.logs_from(message.channel)
+      x = await client.logs_from(message.channel)
       for msgs in x:
         print(x.content)
       
