@@ -30,6 +30,7 @@ async def on_message(message): # The following code is executed on message event
     if message.content.startswith('+unmaintenance'):
       async for message in client.logs_from(discord.Object(id='536761750242983937'), limit = 2):
         lastMessage = message
+        print(message)
       await client.delete_message(lastMessage)
 
       
