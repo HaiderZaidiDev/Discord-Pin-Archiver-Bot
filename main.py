@@ -29,8 +29,8 @@ async def on_message(message): # The following code is executed on message event
     
     if message.content.startswith('+unmaintenance'):
       x = client.logs_from(message.channel)
-      totalMsgs = [message.content for message in x]
-      print(totalMsgs)
+      for msgs in x:
+        print(x.content)
       
     
 
