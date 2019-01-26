@@ -29,7 +29,7 @@ async def on_message(message): # The following code is executed on message event
     
     if message.content.startswith('+unmaintenance'):
       x = message.author.roles
-      msgData = [message.content for message in x]
+      msgData = [role.name for message in x]
       print(msgData)
       msgLogs = client.logs_from(message.channel)
       print(msgLogs)
