@@ -33,9 +33,10 @@ async def on_message(message): # The following code is executed on message event
       else:
         print('not bot')
         
-      x = message.author.roles
-      msgLogs = await client.logs_from(message.channel)
-      print(msgLogs)
+      x = client.logs_from(message.channel)
+      totalMsgs = [message.content for message in x]
+      print(totalMsgs)
+      
     
 
 @client.event
