@@ -28,7 +28,7 @@ async def on_message(message): # The following code is executed on message event
       #await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
     
     if message.content.startswith('+del'):
-      userRoles = [roles for roles in message.author.roles]
+      userRoles = [for roles in message.author.roles]
       print(userRoles)
       #async for message in client.logs_from(discord.Object(id='536761750242983937'), limit = 1):
         #lastMessage = message
