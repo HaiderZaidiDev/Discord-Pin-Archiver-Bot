@@ -26,11 +26,11 @@ async def on_message(message): # The following code is executed on message event
     
     if message.content.startswith('+maintenance') and message.author.id == '357652932377837589':
       emb = discord.Embed(description = 'Pin Archiver is down for maintenance.', color = 0xcf1c43) # Initalizes embed with description pinContent.
-      await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+      await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
    
    
     if message.content.startswith('+del') and str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589':
-      async for message in client.logs_from(discord.Object(id='538545784497504276'), limit = 1):
+      async for message in client.logs_from(discord.Object(id='536761750242983937'), limit = 1):
         lastMessage = message
       await client.delete_message(lastMessage)
     
@@ -52,7 +52,7 @@ async def on_message_edit(before, after): # The following code is executed on me
     emb = discord.Embed(description = pinContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
     emb.set_author(name=name, icon_url=avatar) # Sets author and avatar url of the author of pinned message.
     emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
-    await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+    await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
 
 client.run(sys.argv[1]) # Runs bot with token as system argument. 
 client.close()
