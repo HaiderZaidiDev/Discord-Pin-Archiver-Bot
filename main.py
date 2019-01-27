@@ -34,6 +34,11 @@ async def on_message(message): # The following code is executed on message event
      async for message in client.logs_from(discord.Object(id='538545784497504276'), limit = 1):
        lastMessage = message
      await client.delete_message(lastMessage)
+    
+    if message.content.startswith('+ping'):
+      emb = discord.Embed(description = 'Online.', color = 0xcf1c43) # Initalizes embed with description pinContent.
+      await client.send_message(message.channel, embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+   
      
 @client.event
 async def on_message_edit(before, after): # The following code is executed on message edit even (whenever a message is pinned/edited).
