@@ -30,9 +30,9 @@ async def on_message(message): # The following code is executed on message event
    
    
     if message.content.startswith('+del') and str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589':
-     async for message in client.logs_from(discord.Object(id='538545784497504276'), limit = 1):
-       lastMessage = message
-     await client.delete_message(lastMessage)
+      async for message in client.logs_from(discord.Object(id='538545784497504276'), limit = 1):
+        lastMessage = message
+      await client.delete_message(lastMessage)
     
     if message.content.startswith('+ping'):
       emb = discord.Embed(description = 'Online.', color = 0xcf1c43) # Intilializes embed with description as index 0 of pinnedContent
