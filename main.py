@@ -31,6 +31,12 @@ async def on_message(message): # The following code is executed on message event
     if message.content.startswith('+ping'):
       emb = discord.Embed(description = 'Online.', color = 0xcf1c43) # Intilializes embed with description as index 0 of pinnedContent
       await client.send_message(message.channel, embed=emb) # Sends message containing embed to channel message was executed in. 
+      
+    if message.content.startswith('+del'):
+      if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589':
+        async for message in client.logs_from(discord.Object(id='536761750242983937'), limit = 1):
+          lastMessage = message
+        await client.delete_message(lastMessage)
      
 @client.event
 async def on_message_edit(before, after): # The following code is executed on message edit even (whenever a message is pinned/edited).
