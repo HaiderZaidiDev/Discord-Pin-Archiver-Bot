@@ -37,6 +37,35 @@ async def on_message(message): # The following code is executed on message event
         async for message in client.logs_from(discord.Object(id='538545784497504276'), limit = 1):
           lastMessage = message
         await client.delete_message(lastMessage)
+    
+    if message.content.startswith('+help'):
+      helpMsg = 
+      '''
+       __**Information**__:
+        
+        This bot was made by @Nitr0us#5090, if you have any questions or require support please contact him.
+        
+       __**Features**__:
+        
+        **1)** Last Pinned Message:
+        Usage: +lastpin 
+        Purpose: Displays the last pinned message of the current channel.
+        
+        **2)** Archive Pinned Messages to #pin-archive:
+        Usage: Automatic
+        Purpose: To archive all pinned messages to a channel in case of deletion.  
+        
+        **3)** Ping:
+        Usage: +ping
+        Purpose: Notifies you if the bot is online.
+        
+        **4)** Delete:
+        Usage: +del
+        Permisssion: Administrators & Moderators
+        Purpose: To delete the last pinned message in #pin-archive.
+      '''
+      emb = discord.Embed(description=helpMsg, color = 0xcf1c43)
+      await client.send_message(message.channel, embed=emb)
      
 @client.event
 async def on_message_edit(before, after): # The following code is executed on message edit even (whenever a message is pinned/edited).
