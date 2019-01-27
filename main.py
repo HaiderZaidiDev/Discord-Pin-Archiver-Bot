@@ -39,8 +39,7 @@ async def on_message(message): # The following code is executed on message event
         await client.delete_message(lastMessage)
     
     if message.content.startswith('+help'):
-      helpMsg = 
-      '''
+      helpMsg = '''
        __**Information**__:
         
         This bot was made by @Nitr0us#5090, if you have any questions or require support please contact him.
