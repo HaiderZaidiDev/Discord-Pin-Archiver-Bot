@@ -25,19 +25,18 @@ async def on_message(message): # The following code is executed on message event
       emb.set_author(name=pinnedNames[0], icon_url=pinnedAvatars[0]) # Sets the embeds avatar and name that matches to the corresponding information in x.
       await client.send_message(message.channel, embed=emb) # Sends message containing embed to channel message was executed in. 
     
-    #if message.content.startswith('+maintenance'):
-      #emb = discord.Embed(description = 'Pin Archiver is down for maintenance.', color = 0xcf1c43) # Initalizes embed with description pinContent.
-      #await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
-    
+    if message.content.startswith('+maintenance'):
+      emb = discord.Embed(description = 'Pin Archiver is down for maintenance.', color = 0xcf1c43) # Initalizes embed with description pinContent.
+      await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+   
+   
     if message.content.startswith('+del') and str('Administrator') in userRoles or message.author.id == '357652932377837589':
-      print('yes')
-        
-      
-      #async for message in client.logs_from(discord.Object(id='536761750242983937'), limit = 1):
-        #lastMessage = message
-      
-     # print(lastMessage.content)
-     # await client.delete_message(lastMessage)
+     async for message in client.logs_from(discord.Object(id='536761750242983937'), limit = 1):
+       lastMessage = message
+     await client.delete_message(lastMessage)
+     
+    if message.content.startswith('+test'):
+      print(message.author.bot)
 
       
 
@@ -49,8 +48,11 @@ async def on_message(message): # The following code is executed on message event
 async def on_message_edit(before, after): # The following code is executed on message edit even (whenever a message is pinned/edited).
   x = await client.pins_from(before.channel) # Returns list of pins as message objects.
   pinnedContent = [message.content for message in x] # list of strings for message objects in x. 
- 
-  if before.author != client.user and before.content in pinnedContent: # If the message was not sent by a bot, and is the last pinned message in the channel, the following code is executed.
+  
+  if before.author.bot:
+    print('Message not from bot, ignoring.')
+  else:
+    if before.author != client.user and before.content in pinnedContent: # If the message was not sent by a bot, and is the last pinned message in the channel, the following code is executed.
     name = before.author.name # Name as author of message.
     avatar = before.author.avatar_url # Avatar as avatar url of message author.
     pinContent = before.content # pinContent as string of pinned message.
