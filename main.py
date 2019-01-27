@@ -36,7 +36,10 @@ async def on_message(message): # The following code is executed on message event
      await client.delete_message(lastMessage)
      
     if message.content.startswith('+test'):
-      print(message.author.bot)
+      if message.author.bot == False:
+        print('Yes')
+      else:
+        print('no')
 
       
 
