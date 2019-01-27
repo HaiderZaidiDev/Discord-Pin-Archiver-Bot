@@ -29,9 +29,8 @@ async def on_message(message): # The following code is executed on message event
     
     if message.content.startswith('+del'):
       userRoles = [roles for roles in message.author.roles]
-      for i in range(len(userRoles)):
-        if str('@everyone') in userRoles[i]:
-          print('yes')
+      if str('@everyone') in userRoles:
+        print('yes')
       else:
         print('no')
       
