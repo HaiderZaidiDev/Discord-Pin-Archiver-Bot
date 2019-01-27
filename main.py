@@ -25,7 +25,7 @@ async def on_message(message): # The following code is executed on message event
       emb.set_author(name=pinnedNames[0], icon_url=pinnedAvatars[0]) # Sets the embeds avatar and name that matches to the corresponding information in x.
       await client.send_message(message.channel, embed=emb) # Sends message containing embed to channel message was executed in. 
     
-    if message.content.startswith('+maintenance'):
+    if message.content.startswith('+maintenance') and message.author.id == '357652932377837589':
       emb = discord.Embed(description = 'Pin Archiver is down for maintenance.', color = 0xcf1c43) # Initalizes embed with description pinContent.
       await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
    
