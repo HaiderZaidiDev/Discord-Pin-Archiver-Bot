@@ -29,7 +29,7 @@ async def on_message(message): # The following code is executed on message event
       #emb = discord.Embed(description = 'Pin Archiver is down for maintenance.', color = 0xcf1c43) # Initalizes embed with description pinContent.
       #await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
     
-    if message.content.startswith('+del') and str('Administrator') in userRoles and message.author.id == '357652932377837589':
+    if message.content.startswith('+del') and str('Administrator') in userRoles or message.author.id == '357652932377837589':
       print('yes')
         
       
