@@ -29,10 +29,12 @@ async def on_message(message): # The following code is executed on message event
     
     if message.content.startswith('+del'):
       userRoles = [roles for roles in message.author.roles]
-      if str('@everyone') in userRoles:
-        print('yes')
-      else:
-        print('no')
+      print(userRoles)
+      
+      userRoles = []
+      for roles in message.author.roles:
+        userRoles.append(roles)
+      print(userRoles)
       
       #async for message in client.logs_from(discord.Object(id='536761750242983937'), limit = 1):
         #lastMessage = message
