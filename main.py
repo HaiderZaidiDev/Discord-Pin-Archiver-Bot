@@ -30,6 +30,10 @@ async def on_message(message): # The following code is executed on message event
     if message.content.startswith('+del'):
       print(message.author.roles)
       
+      for roles in message.author.roles:
+        print(roles)
+        
+      
       #async for message in client.logs_from(discord.Object(id='536761750242983937'), limit = 1):
         #lastMessage = message
       
