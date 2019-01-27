@@ -31,7 +31,7 @@ async def on_message(message): # The following code is executed on message event
    
    
     if message.content.startswith('+del') and str('Administrator') in userRoles or message.author.id == '357652932377837589':
-     async for message in client.logs_from(discord.Object(id='536761750242983937'), limit = 0):
+     async for message in client.logs_from(discord.Object(id='536761750242983937'), limit = 1):
        lastMessage = message
      await client.delete_message(lastMessage)
      
