@@ -20,14 +20,13 @@ async def on_message(message): # The following code is executed on message event
       pinnedAvatars = [message.author.avatar_url for message in x] # list of avatar urls for message objects in x.
       pinnedContent = [message.content for message in x] # list of message strings for message objects in x.
       attachments = [message.attachments for message in x]
-      print(attachments)
       
      
       emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43) # Intilializes embed with description as index 0 of pinnedContent.
       emb.set_author(name=pinnedNames[0], icon_url=pinnedAvatars[0]) # Sets the embeds avatar and name that matches to the corresponding information in x.
       
       if attachments != []: # If the pinned message has an attachment, the following code is executed.
-        imgContent = attachments[1]['url'] # Gets url of the attachment.
+        imgContent = attachments[0][0['url'] # Gets url of the attachment.
         emb.set_image(url=imgContent) # Sets image url as embed image.
         
       await client.send_message(message.channel, embed=emb) # Sends message containing embed to channel message was executed in. 
