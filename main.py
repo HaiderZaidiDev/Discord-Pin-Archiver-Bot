@@ -12,7 +12,6 @@ async def on_ready(): # When the bot goes online, the following code is executed
 
 @client.event
 async def on_message(message): # The following code is executed on message event, parameter message.
-  print(message.reactions)
   userRoles = [role.name for role in message.author.roles]
   if message.author != client.user: # If the message is not from a bot, the following code is executed.
     if message.content.startswith('+lastpin'): # If a user enters a message starting with +lastpin, the following code is executed.
@@ -90,6 +89,10 @@ async def on_message_edit(before, after): # The following code is executed on me
     emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
     await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
 
+@client.event
+async def on_reaction_add(reaction, user):
+  print(reaction) 
+  
 client.run(sys.argv[1]) # Runs bot with token as system argument. 
 client.close()
   
