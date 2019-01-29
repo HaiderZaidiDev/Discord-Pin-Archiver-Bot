@@ -98,10 +98,8 @@ async def on_message_edit(before, after): # The following code is executed on me
 
 @client.event
 async def on_reaction_add(reaction, user):
-  print(reaction.count)
   if reaction.emoji == '📌':
-    print(reaction.count)
-    if reaction.count >= 7:
+    if reaction.count >= 1:
       await client.pin_message(reaction.message)
       
   
