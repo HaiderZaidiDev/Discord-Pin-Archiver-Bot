@@ -80,11 +80,13 @@ async def on_message_edit(before, after): # The following code is executed on me
   attachments = before.attachments # Returns list of message attachments in dictionaries.
   
   print(pinnedContent)
-  if before.content in pinnedContent:
-    print('yes')
-    print(before.content)
-  else:
-    print('no')
+  if before.content == '':
+    print('yes1')
+  
+  if before.content == None:
+    print('yes2')
+   
+  print(before)
 
   
   if before.author != client.user and before.content in pinnedContent and before.author.bot == False: # If the message was not sent by a bot, and is the last pinned message in the channel, the following code is executed.
@@ -96,9 +98,9 @@ async def on_message_edit(before, after): # The following code is executed on me
     emb = discord.Embed(description = pinContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
     emb.set_author(name=name, icon_url=avatar) # Sets author and avatar url of the author of pinned message.
     
-    #if attachments != []: # If the pinned message has an attachment, the following code is executed.
-      #imgContent = attachments[0]['url'] # Gets url of the attachment.
-      #emb.set_image(url=imgContent) # Sets image url as embed image.
+    if attachments != []: # If the pinned message has an attachment, the following code is executed.
+      imgContent = attachments[0]['url'] # Gets url of the attachment.
+      emb.set_image(url=imgContent) # Sets image url as embed image.
       
     emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
     await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
