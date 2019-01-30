@@ -33,7 +33,7 @@ async def on_message(message): # The following code is executed on message event
     
     if message.content.startswith('+maintenance') and message.author.id == '357652932377837589': #If the message starts with +maintenance, and was made by user @Nitr0us#5090, the following code is executed:
       emb = discord.Embed(description = 'Pin Archiver is down for maintenance.', color = 0xcf1c43) # Initalizes embed with description pinContent.
-      await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+      await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
     
     if message.content.startswith('+ping'): # If the message starts with +ping, the following code is executed.
       emb = discord.Embed(description = 'Online.', color = 0xcf1c43) # Intilializes embed with online message.
@@ -41,7 +41,7 @@ async def on_message(message): # The following code is executed on message event
       
     if message.content.startswith('+del'): # If the message starts with +del, the following code is executed.
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
-        async for message in client.logs_from(discord.Object(id='538545784497504276'), limit = 1): # Fetches last message in the channel #pin-archive
+        async for message in client.logs_from(discord.Object(id='536761750242983937'), limit = 1): # Fetches last message in the channel #pin-archive
           lastMessage = message # Variable for last message sent in #pin-archive
         await client.delete_message(lastMessage) # Deletes lastMessage.
     
@@ -94,7 +94,7 @@ async def on_message_edit(before, after): # The following code is executed on me
       #emb.set_image(url=imgContent) # Sets image url as embed image.
       
     emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
-    await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+    await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
 
 @client.event
 async def on_reaction_add(reaction, user):
