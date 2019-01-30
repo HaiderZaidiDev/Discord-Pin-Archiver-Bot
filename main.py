@@ -45,6 +45,12 @@ async def on_message(message): # The following code is executed on message event
           lastMessage = message # Variable for last message sent in #pin-archive
         await client.delete_message(lastMessage) # Deletes lastMessage.
     
+    if mssage.content.startswith('+pin'):
+      if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
+        msgIdToPin = message.content.replace('+pin ', '')
+        await client.pin_message(discord.Object(id=msgIdToPin)
+      
+    
     if message.content.startswith('+help'): # If the message starts with +help, the following code is executed.
       helpMsg = '''
        __**Information**__:
