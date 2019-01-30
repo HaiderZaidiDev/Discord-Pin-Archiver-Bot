@@ -78,6 +78,12 @@ async def on_message_edit(before, after): # The following code is executed on me
   x = await client.pins_from(before.channel) # Returns list of pins as message objects.
   pinnedContent = [message.content for message in x] # List of strings for message objects in x. 
   attachments = before.attachments # Returns list of message attachments in dictionaries.
+  
+  print(pinnedContent)
+  if before.content in pinnedContent:
+    print('yes')
+   else:
+    print('no')
 
   
   if before.author != client.user and before.content in pinnedContent and before.author.bot == False: # If the message was not sent by a bot, and is the last pinned message in the channel, the following code is executed.
