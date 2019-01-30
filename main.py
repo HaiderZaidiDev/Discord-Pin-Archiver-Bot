@@ -48,7 +48,8 @@ async def on_message(message): # The following code is executed on message event
     if mssage.content.startswith('+pin'):
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
         msgIdToPin = message.content.replace('+pin ', '')
-        await client.pin_message(discord.Object(id=msgIdToPin)
+        pring(msgIdToPin)
+        await client.pin_message(discord.Object(id=msgIdToPin))
       
     
     if message.content.startswith('+help'): # If the message starts with +help, the following code is executed.
@@ -84,17 +85,7 @@ async def on_message_edit(before, after): # The following code is executed on me
   x = await client.pins_from(before.channel) # Returns list of pins as message objects.
   pinnedContent = [message.content for message in x] # List of strings for message objects in x. 
   attachments = before.attachments # Returns list of message attachments in dictionaries.
-  
-  print(pinnedContent)
-  if before.content == '':
-    print('yes1')
-  
-  if before.content == None:
-    print('yes2')
-   
-  print(before)
 
-  
   if before.author != client.user and before.content in pinnedContent and before.author.bot == False and before.content != '': # If the message was not sent by a bot, and is the last pinned message in the channel, the following code is executed.
     name = before.author.name # Name as author of message.
     avatar = before.author.avatar_url # Avatar as avatar url of message author.
@@ -109,7 +100,7 @@ async def on_message_edit(before, after): # The following code is executed on me
       emb.set_image(url=imgContent) # Sets image url as embed image.
       
     emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
-    await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+    await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
 
 @client.event
 async def on_reaction_add(reaction, user):
