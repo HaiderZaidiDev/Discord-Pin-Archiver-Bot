@@ -82,7 +82,7 @@ async def on_message_edit(before, after): # The following code is executed on me
   print(pinnedContent)
   if before.content in pinnedContent:
     print('yes')
-    print('before.content')
+    print(before.content)
   else:
     print('no')
 
