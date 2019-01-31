@@ -47,10 +47,15 @@ async def on_message(message): # The following code is executed on message event
     
     if message.content.startswith('+pin'):
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
-        msgIdToPin = message.content.replace('+pin ', '')
-        msgIdContents = await client.get_message(message.channel, msgIdToPin)
-        print(msgIdContents)
-        await client.pin_message(msgIdContents)
+        try:
+          msgIdToPin = message.content.replace('+pin ', '')
+          msgIdContents = await client.get_message(message.channel, msgIdToPin)
+          await client.pin_message(msgIdContents)
+        
+        except (discord.errors.HTTPException, discord.errors.NotFound:) as e:
+          emb = discord.Embed(description='Something went wrong! - {}'.format(e), color = 0xcf1c43)
+          await client.send_message(message.channel, embed=emb)
+          
       
     
     if message.content.startswith('+help'): # If the message starts with +help, the following code is executed.
