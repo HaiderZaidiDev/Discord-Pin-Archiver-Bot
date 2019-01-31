@@ -45,7 +45,7 @@ async def on_message(message): # The following code is executed on message event
           lastMessage = message # Variable for last message sent in #pin-archive
         await client.delete_message(lastMessage) # Deletes lastMessage.
     
-    if message.content.startswith('+pin'):
+    if message.content.startswith('+pin') and message.content != str('+ping'):
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
         try:
           msgIdToPin = message.content.replace('+pin ', '')
