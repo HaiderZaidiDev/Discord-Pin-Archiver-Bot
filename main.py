@@ -79,7 +79,7 @@ async def on_message(message): # The following code is executed on message event
         msgIdToPin = message.content.replace('+pin ', '')
         msgIdContents = await client.get_message(message.channel, msgIdToPin)
           
-        if msgIdToPin in pinnedContent:
+        if msgIdToPin in pinnedIds:
           await client.unpin_message(msgIdContents)
           await client.pin_message(msgIdContents)
         else:
