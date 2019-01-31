@@ -83,6 +83,7 @@ async def on_message(message): # The following code is executed on message event
           
         if msgIdToPin in pinnedIds:
           await client.unpin_message(msgIdContents)
+          await asyncio.sleep(1)
           await client.pin_message(msgIdContents)
         else:
           await client.pin_message(msgIdContents)
