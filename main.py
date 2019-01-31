@@ -80,8 +80,7 @@ async def on_message(message): # The following code is executed on message event
         pinnedIds = [message.id for message in x] # List of strings for message objects in x.
         msgIdToPin = message.content.replace('+pin ', '')
         msg = await client.get_message(message.channel, msgIdToPin)
-        print(msg.author)
-        print(msg.author.avatar_url)
+        on_message_edit(msg)
         
         
 
