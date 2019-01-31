@@ -35,7 +35,7 @@ async def on_message(message): # The following code is executed on message event
       emb = discord.Embed(description = 'Pin Archiver is down for maintenance.', color = 0xcf1c43) # Initalizes embed with description pinContent.
       await client.send_message(discord.Object(id=538545784497504276), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
     
-    if message.content.startswith('+ping'): # If the message starts with +ping, the following code is executed.
+    if message.content.endswith('+ping'): # If the message starts with +ping, the following code is executed.
       emb = discord.Embed(description = 'Online.', color = 0xcf1c43) # Intilializes embed with online message.
       await client.send_message(message.channel, embed=emb) # Sends message containing embed to channel message was executed in. 
       
@@ -45,7 +45,7 @@ async def on_message(message): # The following code is executed on message event
           lastMessage = message # Variable for last message sent in #pin-archive
         await client.delete_message(lastMessage) # Deletes lastMessage.
     
-    if mssage.content.startswith('+pin'):
+    if message.content.startswith('+pin'):
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
         msgIdToPin = message.content.replace('+pin ', '')
         pring(msgIdToPin)
