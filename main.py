@@ -49,7 +49,7 @@ async def on_message(message): # The following code is executed on message event
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
         msgIdToPin = message.content.replace('+pin ', '')
         print(msgIdToPin)
-        await client.pin_message(message.channel, discord.Object(id=msgIdToPin))
+        await client.pin_message(msgIdToPin)
       
     
     if message.content.startswith('+help'): # If the message starts with +help, the following code is executed.
