@@ -98,7 +98,7 @@ async def on_message(message): # The following code is executed on message event
         
         except:
           emb = discord.Embed(description='Error: Message not found, try again.', color = 0xcf1c43)
-          client.send_message(message.channel, embed=emb)
+          await client.send_message(message.channel, embed=emb)
 
         
         
