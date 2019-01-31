@@ -128,6 +128,11 @@ async def on_message(message): # The following code is executed on message event
         Usage: +del
         Permisssion: Administrators & Moderators
         Purpose: To delete the last pinned message in #pin-archive.
+        
+        **5)** Archive:
+        Usage: +archive <messageid>
+        Permission: Administrators & Moderators
+        Purpose: To archive a message to #pin-archive, regardless whether the message is pinned.
       ''' 
       emb = discord.Embed(description=helpMsg, color = 0xcf1c43) # Intializes embed with help message as description.
       await client.send_message(message.channel, embed=emb) # Sends message containing embed to the channel the command was executed in.
