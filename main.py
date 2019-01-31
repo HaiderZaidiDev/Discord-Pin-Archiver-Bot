@@ -79,14 +79,9 @@ async def on_message(message): # The following code is executed on message event
         x = await client.pins_from(message.channel) # Returns list of pins as message objects.
         pinnedIds = [message.id for message in x] # List of strings for message objects in x.
         msgIdToPin = message.content.replace('+pin ', '')
-        msgIdContents = await client.get_message(message.channel, msgIdToPin)
-          
-        if msgIdToPin in pinnedIds:
-          await client.unpin_message(msgIdContents)
-          await asyncio.sleep(1)
-          await client.pin_message(msgIdContents)
-        else:
-          await client.pin_message(msgIdContents)
+        msg = await client.get_message(message.channel, msgIdToPin)
+        print(msg.author)
+        print(msg.author.avatar_url)
         
         
 
