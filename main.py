@@ -52,7 +52,7 @@ async def on_message(message): # The following code is executed on message event
           msgIdContents = await client.get_message(message.channel, msgIdToPin)
           await client.pin_message(msgIdContents)
         
-        except (discord.errors.HTTPException, discord.errors.NotFound:) as e:
+        except (discord.errors.HTTPException, discord.errors.NotFound) as e:
           emb = discord.Embed(description='Something went wrong! - {}'.format(e), color = 0xcf1c43)
           await client.send_message(message.channel, embed=emb)
           
