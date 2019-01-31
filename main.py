@@ -74,7 +74,7 @@ async def on_message(message): # The following code is executed on message event
     
     if message.content.startswith('+pin') and message.content != str('+ping'):
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
-        x = await client.pins_from(before.channel) # Returns list of pins as message objects.
+        x = await client.pins_from(message.channel) # Returns list of pins as message objects.
         pinnedIds = [message.id for message in x] # List of strings for message objects in x. 
         
         try:
