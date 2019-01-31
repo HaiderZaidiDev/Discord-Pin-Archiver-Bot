@@ -62,7 +62,7 @@ async def on_message(message): # The following code is executed on message event
       emb = discord.Embed(description = 'Pin Archiver is down for maintenance.', color = 0xcf1c43) # Initalizes embed with description pinContent.
       await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
     
-    if message.content == str('+ping'): # If the message starts with +ping, the following code is executed.
+    if message.content == str('+status'): # If the message starts with +status, the following code is executed.
       emb = discord.Embed(description = 'Online.', color = 0xcf1c43) # Intilializes embed with online message.
       await client.send_message(message.channel, embed=emb) # Sends message containing embed to channel message was executed in. 
       
@@ -97,12 +97,6 @@ async def on_message(message): # The following code is executed on message event
         except:
           emb = discord.Embed(description='Error: Message not found, try again.', color = 0xcf1c43)
           await client.send_message(message.channel, embed=emb)
-
-        
-        
-
-          
-      
     
     if message.content.startswith('+help'): # If the message starts with +help, the following code is executed.
       helpMsg = '''
@@ -121,7 +115,7 @@ async def on_message(message): # The following code is executed on message event
         Purpose: To archive all pinned messages to a channel in case of deletion.  
         
         **3)** Ping:
-        Usage: +ping
+        Usage: +status
         Purpose: Notifies you if the bot is online.
         
         **4)** Delete:
