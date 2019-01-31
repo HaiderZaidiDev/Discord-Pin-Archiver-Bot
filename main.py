@@ -75,21 +75,18 @@ async def on_message(message): # The following code is executed on message event
     if message.content.startswith('+pin') and message.content != str('+ping'):
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
         x = await client.pins_from(message.channel) # Returns list of pins as message objects.
-        pinnedIds = [message.id for message in x] # List of strings for message objects in x. 
-        
-        try:
-          msgIdToPin = message.content.replace('+pin ', '')
-          msgIdContents = await client.get_message(message.channel, msgIdToPin)
+        pinnedIds = [message.id for message in x] # List of strings for message objects in x.
+        msgIdToPin = message.content.replace('+pin ', '')
+        msgIdContents = await client.get_message(message.channel, msgIdToPin)
           
-          if msgIdToPin in pinnedContent:
-            await client.unpin_message(msgIdContents)
-            await client.pin_message(msgIdContents)
-          else:
-            await client.pin_message(msgIdContents)
+        if msgIdToPin in pinnedContent:
+          await client.unpin_message(msgIdContents)
+          await client.pin_message(msgIdContents)
+        else:
+          await client.pin_message(msgIdContents)
         
-        except:
-          emb = discord.Embed(description='Error: Message not found.', color = 0xcf1c43)
-          await client.send_message(message.channel, embed=emb)
+        
+
           
       
     
