@@ -130,7 +130,8 @@ async def on_message(message): # The following code is executed on message event
       ''' 
       emb = discord.Embed(description=helpMsg, color = 0xcf1c43) # Intializes embed with help message as description.
       await client.send_message(message.channel, embed=emb) # Sends message containing embed to the channel the command was executed in.
-      
+
+
   
 client.run(sys.argv[1]) # Runs bot with token as system argument. 
 client.close()
