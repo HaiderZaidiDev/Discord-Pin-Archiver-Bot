@@ -126,7 +126,7 @@ async def on_message(message): # The following code is executed on message event
         
         **4)** Delete:
         Usage: +del
-        Permisssion: Administrators & Moderators
+        Permission: Administrators & Moderators
         Purpose: To delete the last pinned message in #pin-archive.
         
         **5)** Archive:
