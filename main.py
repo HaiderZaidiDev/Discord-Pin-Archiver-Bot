@@ -74,24 +74,29 @@ async def on_message(message): # The following code is executed on message event
     
     if message.content.startswith('+archive'):
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
-        msgIdToArchive = message.content.replace('+archive ', '')
-        msg = await client.get_message(message.channel, msgIdToArchive)
-        attachments = msg.attachments # Returns list of message attachments in dictionaries.
+        try:
+          msgIdToArchive = message.content.replace('+archive ', '')
+          msg = await client.get_message(message.channel, msgIdToArchive)
+          attachments = msg.attachments # Returns list of message attachments in dictionaries.
 
-        name = msg.author.name # Name as author of message.
-        avatar = msg.author.avatar_url # Avatar as avatar url of message author.
-        pinContent = msg.content # pinContent as string of pinned message.
-        msgChannel = msg.channel # msgChannel as channel name the message was pinned in.
+          name = msg.author.name # Name as author of message.
+          avatar = msg.author.avatar_url # Avatar as avatar url of message author.
+          pinContent = msg.content # pinContent as string of pinned message.
+          msgChannel = msg.channel # msgChannel as channel name the message was pinned in.
    
-        emb = discord.Embed(description = pinContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
-        emb.set_author(name=name, icon_url=avatar) # Sets author and avatar url of the author of pinned message.
+          emb = discord.Embed(description = pinContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
+          emb.set_author(name=name, icon_url=avatar) # Sets author and avatar url of the author of pinned message.
     
-        if attachments != []: # If the pinned message has an attachment, the following code is executed.
-          imgContent = attachments[0]['url'] # Gets url of the attachment.
-          emb.set_image(url=imgContent) # Sets image url as embed image.
+          if attachments != []: # If the pinned message has an attachment, the following code is executed.
+            imgContent = attachments[0]['url'] # Gets url of the attachment.
+            emb.set_image(url=imgContent) # Sets image url as embed image.
       
-        emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
-        await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+          emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
+          await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+        
+          except discord.errors.HTTPException:
+            emb = discord.Embed(description='Error: Message not found, try again.', color = 0xcf1c43)
+            await client.send_message(message.channel, embed=emb)
         
     
     if message.content.startswith('+help'): # If the message starts with +help, the following code is executed.
