@@ -94,9 +94,9 @@ async def on_message(message): # The following code is executed on message event
           emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
           await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
         
-         except discord.errors.HTTPException:
-            emb = discord.Embed(description='Error: Message not found, try again.', color = 0xcf1c43)
-            await client.send_message(message.channel, embed=emb)
+        except discord.errors.HTTPException:
+          emb = discord.Embed(description='Error: Message not found, try again.', color = 0xcf1c43)
+          await client.send_message(message.channel, embed=emb)
         
     
     if message.content.startswith('+help'): # If the message starts with +help, the following code is executed.
