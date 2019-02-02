@@ -52,7 +52,7 @@ async def on_message(message): # The following code is executed on message event
       emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43) # Intilializes embed with description as index 0 of pinnedContent.
       emb.set_author(name=pinnedNames[0], icon_url=pinnedAvatars[0]) # Sets the embeds avatar and name that matches to the corresponding information in x.
       
-      if attachments != []: # If the pinned message has an attachment, the following code is executed.
+      if attachments[0] != []: # If the pinned message has an attachment, the following code is executed.
         imgContent = attachments[0][0]['url'] # Gets url of the attachment.
         emb.set_image(url=imgContent) # Sets image url as embed image.
         
