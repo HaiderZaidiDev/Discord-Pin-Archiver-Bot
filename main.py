@@ -12,10 +12,11 @@ async def on_ready(): # When the bot goes online, the following code is executed
 @client.event
 async def on_message_edit(before, after): # The following code is executed on message edit even (whenever a message is pinned/edited).
   x = await client.pins_from(before.channel) # Returns list of pins as message objects.
+  pinnedIds = [message.id for message in x]
   pinnedContent = [message.content for message in x] # List of strings for message objects in x. 
   attachments = before.attachments # Returns list of message attachments in dictionaries.
 
-  if before.author != client.user and before.content in pinnedContent and before.author.bot == False and before.content != '': # If the message was not sent by a bot, and is the last pinned message in the channel, the following code is executed.
+  if before.author != client.user and before.id in pinnedIds and before.author.bot == False and before.content != '': # If the message was not sent by a bot, and is the last pinned message in the channel, the following code is executed.
     name = before.author.display_name # Name as author of message.
     avatar = before.author.avatar_url # Avatar as avatar url of message author.
     pinContent = before.content # pinContent as string of pinned message.
