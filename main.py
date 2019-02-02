@@ -47,7 +47,7 @@ async def on_message(message): # The following code is executed on message event
       pinnedAvatars = [message.author.avatar_url for message in x] # list of avatar urls for message objects in x.
       pinnedContent = [message.content for message in x] # list of message strings for message objects in x.
       attachments = [message.attachments for message in x]
-      
+      print(attachments)
      
       emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43) # Intilializes embed with description as index 0 of pinnedContent.
       emb.set_author(name=pinnedNames[0], icon_url=pinnedAvatars[0]) # Sets the embeds avatar and name that matches to the corresponding information in x.
