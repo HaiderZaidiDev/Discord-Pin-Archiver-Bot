@@ -111,23 +111,25 @@ async def on_message(message): # The following code is executed on message event
         Usage: +lastpin 
         Purpose: Displays the last pinned message of the current channel.
         
-        **2)** Archive Pinned Messages to #pin-archive:
+        **2)** Archive Pinned Messages (Automatic):
         Usage: Automatic
-        Purpose: To archive all pinned messages to a channel in case of deletion.  
+        Purpose: To archive all pinned messages to #pin-archive. 
         
-        **3)** Ping:
+        **3)** Archive Messages (Manual)
+        Usage: +archive <messageid>
+        Permission: Administrators & Moderators
+        Purpose: To archive a message to #pin-archive, regardless whether the message is pinned.
+        
+        **4)** Status:
         Usage: +status
         Purpose: Notifies you if the bot is online.
         
-        **4)** Delete:
+        **5)** Delete:
         Usage: +del
         Permission: Administrators & Moderators
         Purpose: To delete the last pinned message in #pin-archive.
         
-        **5)** Archive:
-        Usage: +archive <messageid>
-        Permission: Administrators & Moderators
-        Purpose: To archive a message to #pin-archive, regardless whether the message is pinned.
+
       ''' 
       emb = discord.Embed(description=helpMsg, color = 0xcf1c43) # Intializes embed with help message as description.
       await client.send_message(message.channel, embed=emb) # Sends message containing embed to the channel the command was executed in.
