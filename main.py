@@ -36,7 +36,13 @@ async def on_message_edit(before, after): # The following code is executed on me
 async def on_reaction_add(reaction, user):
   if reaction.emoji == '📌':
     if reaction.count == 1:
-      await client.pin_message(reaction.message)
+      try:
+        await client.pin_message(reaction.message)
+      except discord.errors.HTTPException:
+        x = await client.pins_from(message.channel)
+        pinnedIds = [message.id for message in x]
+        oldestPin = await client.get_message(message.channel, pinnedIds[0])
+        await client.unpin_message(oldestPin)
  
 @client.event
 async def on_message(message): # The following code is executed on message event, parameter message.
