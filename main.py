@@ -16,7 +16,7 @@ async def on_message_edit(before, after): # The following code is executed on me
   print(len(pinnedIds))
   
   if len(pinnedIds) == 50:
-    oldestPin = await client.get_message(before.channel, pinnedIds[0])
+    oldestPin = await client.get_message(before.channel, pinnedIds[-1])
     await client.unpin_message(oldestPin)
     print(len(pinnedIds))
     
