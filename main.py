@@ -39,7 +39,11 @@ async def on_reaction_add(reaction, user):
       try:
         await client.pin_message(reaction.message)
       except discord.errors.HTTPException:
-        print('yes')
+        x = await client.pins_from(reaction.message.channel)
+        pinnedIds = [message.id for message in x]
+        oldestPin = await client.get_message(reaction.message.channel, pinnedIds[0])
+        await client.unpin_message(oldestPin)
+        await client.pin_message(reaction.message)
  
 @client.event
 async def on_message(message): # The following code is executed on message event, parameter message.
