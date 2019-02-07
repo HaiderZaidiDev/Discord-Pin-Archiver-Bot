@@ -13,13 +13,10 @@ async def on_ready(): # When the bot goes online, the following code is executed
 async def on_message_edit(before, after): # The following code is executed on message edit even (whenever a message is pinned/edited).
   x = await client.pins_from(before.channel) # Returns list of pins as message objects.
   pinnedIds = [before.id for message in x]
-  print(len(pinnedIds))
   
   if len(pinnedIds) == 50:
     oldestPin = await client.get_message(before.channel, pinnedIds[-1])
     await client.unpin_message(oldestPin)
-    print(len(pinnedIds))
-    
   
   attachments = before.attachments # Returns list of message attachments in dictionaries.
 
@@ -37,7 +34,7 @@ async def on_message_edit(before, after): # The following code is executed on me
       emb.set_image(url=imgContent) # Sets image url as embed image.
       
     emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
-    await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+    await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
 
 @client.event
 async def on_reaction_add(reaction, user):
@@ -48,7 +45,7 @@ async def on_reaction_add(reaction, user):
       except discord.errors.HTTPException:
         x = await client.pins_from(reaction.message.channel)
         pinnedIds = [message.id for message in x]
-        oldestPin = await client.get_message(reaction.message.channel, pinnedIds[0])
+        oldestPin = await client.get_message(reaction.message.channel, pinnedIds[-1])
         await client.unpin_message(oldestPin)
         await client.pin_message(reaction.message)
  
