@@ -86,7 +86,7 @@ async def on_message(message): # The following code is executed on message event
      
     if message.content.startswith('+reboot'):
       if message.author.id == '357652932377837589':
-        os.execl('/root/pinArchiver', sys.argv[1])
+        os.execl('/root/pinArchiver/main.py', sys.argv[1])
     
     if message.content.startswith('+archive'):
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
