@@ -8,6 +8,7 @@ Pin Archiver has the following features:
 * Pin a message in the current channel if it recieves a certain number of reactions.
 * Archive any message to a specified channel via the message id.
 * Delete the last message from a specified channel.
+* Delete the oldest pinned message in the current channel once the maximum number of pinned messages has been reached.
 
 ## Usage
 If you would like to use this bot in your own server please feel free to clone the repository and host it yourself. If you go this route, you will need to edit the various channel and user-ids in the code for the bot to work properly. 
