@@ -57,7 +57,7 @@ async def on_message(message): # The following code is executed on message event
   if message.author != client.user: # If the message is not from a bot, the following code is executed.
     if message.content.startswith('+lastpin'): # If a user enters a message starting with +lastpin, the following code is executed.
       x = await client.pins_from(message.channel) # Returns list of pins as message objects. 
-      pinnedNames = [message.author_name for message in x] # list of names for message objects in x.
+      pinnedNames = [message.author.display_name for message in x] # list of names for message objects in x.
       pinnedAvatars = [message.author.avatar_url for message in x] # list of avatar urls for message objects in x.
       pinnedContent = [message.content for message in x] # list of message strings for message objects in x.
       attachments = [message.attachments for message in x] # list of attachments for message objects in x.
