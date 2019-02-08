@@ -93,6 +93,10 @@ async def on_message(message): # The following code is executed on message event
       if message.author.id == '357652932377837589':
         todoContent = message.content.replace('+todo ', '')
         await client.send_message(message.author, todoContent)
+    
+    if message.content.startswith('+'):
+      await asyncio.sleep(7)
+      await client.delete_message(message)
      
     
     if message.content.startswith('+archive'): # If the message starts with +archive, the following code is executed.
