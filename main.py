@@ -127,6 +127,7 @@ async def on_message(message): # The following code is executed on message event
         
         **2)** Archive Pinned Messages (Automatic):
         Usage: Automatic
+        Usage Secondary: Culminate 7 📌 reactions on a message.
         Purpose: To archive all pinned messages to #pin-archive. 
         
         **3)** Archive Messages (Manual)
