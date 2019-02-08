@@ -59,7 +59,7 @@ async def on_message(message): # The following code is executed on message event
   
   if message.author != client.user: # If the message is not from a bot, the following code is executed.
     if message.content.startswith('+'):
-      await asyncio.sleep(5)
+      await asyncio.sleep(10)
       await client.delete_message(message)
       
     if message.content.startswith('+lastpin'): # If a user enters a message starting with +lastpin, the following code is executed.
