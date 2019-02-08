@@ -2,6 +2,7 @@
 import discord # Imports discord library.
 import sys # Imports sys library. 
 import os
+import asyncio
 
 client = discord.Client() # Initializes bot as client.
 
