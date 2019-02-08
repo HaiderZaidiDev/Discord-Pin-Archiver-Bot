@@ -52,8 +52,12 @@ async def on_reaction_add(reaction, user): # The following code is executed on a
         await client.pin_message(reaction.message) # Pins the new message.
  
 @client.event
-async def on_message(message): # The following code is executed on message event, parameter message.
-  userRoles = [role.name for role in message.author.roles]
+async def on_message(message): # The following code is executed on message event, parameter message
+  try:
+    userRoles = [role.name for role in message.author.roles]
+  except:
+    pass
+  
   if message.author != client.user: # If the message is not from a bot, the following code is executed.
     if message.content.startswith('+lastpin'): # If a user enters a message starting with +lastpin, the following code is executed.
       x = await client.pins_from(message.channel) # Returns list of pins as message objects. 
