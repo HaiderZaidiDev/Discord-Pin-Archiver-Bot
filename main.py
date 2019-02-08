@@ -6,7 +6,6 @@ import asyncio
 
 client = discord.Client() # Initializes bot as client.
 
-
 @client.event 
 async def on_ready(): # When the bot goes online, the following code is executed.
   print(str(client.user) + ' is online.') # Prints operational message.
@@ -15,12 +14,11 @@ async def on_ready(): # When the bot goes online, the following code is executed
 async def on_message_edit(before, after): # The following code is executed on message edit even (whenever a message is pinned/edited).
   x = await client.pins_from(before.channel) # Returns list of pins as message objects.
   pinnedIds = [message.id for message in x] # Returns list of pins as message ids.
+  attachments = before.attachments # Returns list of message attachments in dictionaries.
   
   if len(pinnedIds) == 50: # If the last pinned messages makes the channel reach the total limit of pins, the following code is executed.
     oldestPin = await client.get_message(before.channel, pinnedIds[-1]) # Fetches the oldest pinned message.
     await client.unpin_message(oldestPin) # Unpins the oldest pinned message.
-  
-  attachments = before.attachments # Returns list of message attachments in dictionaries.
 
   if before.author != client.user and before.id in pinnedIds and before.author.bot == False and before.content != '': # If the message was not sent by a bot, and is the last pinned message in the channel, the following code is executed.
     name = before.author.display_name # Name as author of message.
@@ -60,6 +58,10 @@ async def on_message(message): # The following code is executed on message event
     pass
   
   if message.author != client.user: # If the message is not from a bot, the following code is executed.
+    if message.content.startswith('+'):
+      await asyncio.sleep(5)
+      await client.delete_message(message)
+      
     if message.content.startswith('+lastpin'): # If a user enters a message starting with +lastpin, the following code is executed.
       x = await client.pins_from(message.channel) # Returns list of pins as message objects. 
       pinnedNames = [message.author.display_name for message in x] # list of names for message objects in x.
@@ -94,12 +96,7 @@ async def on_message(message): # The following code is executed on message event
       if message.author.id == '357652932377837589':
         todoContent = message.content.replace('+todo ', '')
         await client.send_message(message.author, todoContent)
-    
-    if message.content.startswith('+'):
-      await asyncio.sleep(7)
-      await client.delete_message(message)
-     
-    
+
     if message.content.startswith('+archive'): # If the message starts with +archive, the following code is executed.
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
         try: # The following code is attempted to be ran.
@@ -125,7 +122,6 @@ async def on_message(message): # The following code is executed on message event
         except discord.errors.HTTPException: # If an http exception is raised in the code above, the following code is executed. Usually indicates an invalid message id.
           emb = discord.Embed(description='Error: Message not found, try again.', color = 0xcf1c43) # Intializes embed.
           await client.send_message(message.channel, embed=emb) # Outputs embed to current channel.
-        
     
     if message.content.startswith('+help'): # If the message starts with +help, the following code is executed.
       helpMsg = '''
@@ -161,8 +157,6 @@ async def on_message(message): # The following code is executed on message event
       emb = discord.Embed(description=helpMsg, color = 0xcf1c43) # Intializes embed with help message as description.
       await client.send_message(message.channel, embed=emb) # Sends message containing embed to the channel the command was executed in.
 
-
-  
 client.run(sys.argv[1]) # Runs bot with token as system argument. 
 client.close()
   
