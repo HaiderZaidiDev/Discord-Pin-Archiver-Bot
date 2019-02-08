@@ -13,11 +13,11 @@ async def on_ready(): # When the bot goes online, the following code is executed
 @client.event
 async def on_message_edit(before, after): # The following code is executed on message edit even (whenever a message is pinned/edited).
   x = await client.pins_from(before.channel) # Returns list of pins as message objects.
-  pinnedIds = [message.id for message in x]
+  pinnedIds = [message.id for message in x] # Returns list of pins as message ids.
   
-  if len(pinnedIds) == 50:
-    oldestPin = await client.get_message(before.channel, pinnedIds[-1])
-    await client.unpin_message(oldestPin)
+  if len(pinnedIds) == 50: # If the last pinned messages makes the channel reach the total limit of pins, the following code is executed.
+    oldestPin = await client.get_message(before.channel, pinnedIds[-1]) # Fetches the oldest pinned message.
+    await client.unpin_message(oldestPin) # Unpins the oldest pinned message.
   
   attachments = before.attachments # Returns list of message attachments in dictionaries.
 
@@ -38,17 +38,18 @@ async def on_message_edit(before, after): # The following code is executed on me
     await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
 
 @client.event
-async def on_reaction_add(reaction, user):
-  if reaction.emoji == '📌':
-    if reaction.count == 1:
-      try:
-        await client.pin_message(reaction.message)
-      except discord.errors.HTTPException:
-        x = await client.pins_from(reaction.message.channel)
-        pinnedIds = [message.id for message in x]
-        oldestPin = await client.get_message(reaction.message.channel, pinnedIds[-1])
-        await client.unpin_message(oldestPin)
-        await client.pin_message(reaction.message)
+async def on_reaction_add(reaction, user): # The following code is executed on a reacton add event.
+  if reaction.emoji == '📌': # If the reaction is a 📌, the following code is executed.
+    if reaction.count == 7: # If there are 7 📌 reactions, the following code is executed.
+      try: # The following code is attempted to be ran.
+        await client.pin_message(reaction.message) # Pins the message.
+        
+      except discord.errors.HTTPException: # If an http exception is raised, usually indicating the max number of pins has been reached, the following code is executed.
+        x = await client.pins_from(reaction.message.channel) # Returns list of pinned messages as message objects.
+        pinnedIds = [message.id for message in x] # Returnns list of message objects as message ids.
+        oldestPin = await client.get_message(reaction.message.channel, pinnedIds[-1]) # Fetches the oldest pinned message in the channel.
+        await client.unpin_message(oldestPin) # Unpins the oldest message.
+        await client.pin_message(reaction.message) # Pins the new message.
  
 @client.event
 async def on_message(message): # The following code is executed on message event, parameter message.
@@ -59,7 +60,7 @@ async def on_message(message): # The following code is executed on message event
       pinnedNames = [message.authoray_name for message in x] # list of names for message objects in x.
       pinnedAvatars = [message.author.avatar_url for message in x] # list of avatar urls for message objects in x.
       pinnedContent = [message.content for message in x] # list of message strings for message objects in x.
-      attachments = [message.attachments for message in x]
+      attachments = [message.attachments for message in x] # list of attachments for message objects in x.
      
       emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43) # Intilializes embed with description as index 0 of pinnedContent.
       emb.set_author(name=pinnedNames[0], icon_url=pinnedAvatars[0]) # Sets the embeds avatar and name that matches to the corresponding information in x.
@@ -85,11 +86,11 @@ async def on_message(message): # The following code is executed on message event
         await client.delete_message(lastMessage) # Deletes lastMessage.
      
     
-    if message.content.startswith('+archive'):
+    if message.content.startswith('+archive'): # If the message starts with +archive, the following code is executed.
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
-        try:
-          msgIdToArchive = message.content.replace('+archive ', '')
-          msg = await client.get_message(message.channel, msgIdToArchive)
+        try: # The following code is attempted to be ran.
+          msgIdToArchive = message.content.replace('+archive ', '') # Isolates the message id.
+          msg = await client.get_message(message.channel, msgIdToArchive) # Gets a message object from the id.
           attachments = msg.attachments # Returns list of message attachments in dictionaries.
 
           name = msg.author.display_name # Name as author of message.
@@ -107,9 +108,9 @@ async def on_message(message): # The following code is executed on message event
           emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
           await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
         
-        except discord.errors.HTTPException:
-          emb = discord.Embed(description='Error: Message not found, try again.', color = 0xcf1c43)
-          await client.send_message(message.channel, embed=emb)
+        except discord.errors.HTTPException: # If an http exception is raised in the code above, the following code is executed. Usually indicates an invalid message id.
+          emb = discord.Embed(description='Error: Message not found, try again.', color = 0xcf1c43) # Intializes embed.
+          await client.send_message(message.channel, embed=emb) # Outputs embed to current channel.
         
     
     if message.content.startswith('+help'): # If the message starts with +help, the following code is executed.
