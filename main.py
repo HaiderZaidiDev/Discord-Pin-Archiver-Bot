@@ -8,7 +8,7 @@ client = discord.Client() # Initializes bot as client.
 
 @client.event 
 async def on_ready(): # When the bot goes online, the following code is executed.
-  print(str(client.user) + ' is online.') # Prints operaitonal message.
+  print(str(client.user) + ' is online.') # Prints operational message.
      
 @client.event
 async def on_message_edit(before, after): # The following code is executed on message edit even (whenever a message is pinned/edited).
