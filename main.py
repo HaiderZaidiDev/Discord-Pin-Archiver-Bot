@@ -58,10 +58,6 @@ async def on_message(message): # The following code is executed on message event
     pass
   
   if message.author != client.user: # If the message is not from a bot, the following code is executed.
-    if message.content.startswith('+'):
-      await asyncio.sleep(10)
-      await client.delete_message(message)
-      
     if message.content.startswith('+lastpin'): # If a user enters a message starting with +lastpin, the following code is executed.
       x = await client.pins_from(message.channel) # Returns list of pins as message objects. 
       pinnedNames = [message.author.display_name for message in x] # list of names for message objects in x.
@@ -118,6 +114,8 @@ async def on_message(message): # The following code is executed on message event
       
           emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
           await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+          await asyncio.sleep(10)
+          await client.delete_message(message)
         
         except discord.errors.HTTPException: # If an http exception is raised in the code above, the following code is executed. Usually indicates an invalid message id.
           emb = discord.Embed(description='Error: Message not found, try again.', color = 0xcf1c43) # Intializes embed.
