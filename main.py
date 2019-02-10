@@ -43,20 +43,19 @@ async def on_reaction_add(reaction, user): # The following code is executed on a
       try: # The following code is attempted to be ran.
         await client.pin_message(reaction.message) # Pins the message.
         
-  if reaction in message.author:
-    print('yeet1')
-    if reaction.emoji == ':white_check_mark:':
-      print('yeet2')
-      x = await client.get_message(message.author, reaction.message.id)
-      await client.delete_message(x)
-      
-        
       except discord.errors.HTTPException: # If an http exception is raised, usually indicating the max number of pins has been reached, the following code is executed.
         x = await client.pins_from(reaction.message.channel) # Returns list of pinned messages as message objects.
         pinnedIds = [message.id for message in x] # Returnns list of message objects as message ids.
         oldestPin = await client.get_message(reaction.message.channel, pinnedIds[-1]) # Fetches the oldest pinned message in the channel.
         await client.unpin_message(oldestPin) # Unpins the oldest message.
         await client.pin_message(reaction.message) # Pins the new message.
+  
+  if reaction in message.author:
+    print('yeet1')
+    if reaction.emoji == ':white_check_mark:':
+      print('yeet2')
+      x = await client.get_message(message.author, reaction.message.id)
+      await client.delete_message(x)
  
 @client.event
 async def on_message(message): # The following code is executed on message event, parameter message
