@@ -43,7 +43,7 @@ async def on_reaction_add(reaction, user): # The following code is executed on a
       try: # The following code is attempted to be ran.
         await client.pin_message(reaction.message) # Pins the message.
         
-  if reaction in message.author:
+   if reaction in message.author:
     print('yeet')
     if reaction.emoji == ':white_check_mark:':
       print('yeet2')
