@@ -44,7 +44,7 @@ async def on_reaction_add(reaction, user): # The following code is executed on a
         await client.pin_message(reaction.message) # Pins the message.
         
    if reaction in message.author:
-    print('yeet')
+    print('yeet1')
     if reaction.emoji == ':white_check_mark:':
       print('yeet2')
       x = await client.get_message(message.author, reaction.message.id)
