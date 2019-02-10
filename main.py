@@ -89,10 +89,10 @@ async def on_message(message): # The following code is executed on message event
           lastMessage = message # Variable for last message sent in #pin-archive
         await client.delete_message(lastMessage) # Deletes lastMessage.
     
-    if message.content.startswith('+todo'):
-      if message.author.id == '357652932377837589':
-        todoContent = message.content.replace('+todo ', '')
-        await client.send_message(message.author, todoContent)
+    if message.content.startswith('+todo'):  # If the messsage starts with +todo, the following code is executed.
+      if message.author.id == '357652932377837589': # If the message was sent by @Nitr0us#5090 the following code is executed.
+        todoContent = message.content.replace('+todo ', '') # Fetches the content of the message excluding the command.
+        await client.send_message(message.author, todoContent) # Sends todoContent to the message author via direct messages.
 
     if message.content.startswith('+archive'): # If the message starts with +archive, the following code is executed.
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
@@ -115,8 +115,8 @@ async def on_message(message): # The following code is executed on message event
       
           emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
           await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
-          await asyncio.sleep(10)
-          await client.delete_message(message)
+          await asyncio.sleep(10) # Adds a 10 second delay bew for the next line of code is executed.
+          await client.delete_message(message) # Deletes the initial command message.
         
         except discord.errors.HTTPException: # If an http exception is raised in the code above, the following code is executed. Usually indicates an invalid message id.
           emb = discord.Embed(description='Error: Message not found, try again.', color = 0xcf1c43) # Intializes embed.
