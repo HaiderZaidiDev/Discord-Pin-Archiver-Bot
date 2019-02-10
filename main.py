@@ -27,17 +27,18 @@ async def on_message_edit(before, after): # The following code is executed on me
     msgChannel = before.channel # msgChannel as channel name the message was pinned in.
    
     emb = discord.Embed(description = pinContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
-    emb.set_author(name=name, icon_url=avatar) # Sets author and avatar url of the author of pinned message.
+    emb.set_author(name=name, icon_url=avatar, url='https://discordapp.com/channels/{0}/{1}/{2}'.format('260272353118912522', before.channel.id, before.id)) # Sets author and avatar url of the author of pinned message.
     
     if attachments != []: # If the pinned message has an attachment, the following code is executed.
       imgContent = attachments[0]['url'] # Gets url of the attachment.
       emb.set_image(url=imgContent) # Sets image url as embed image.
       
-    emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
-    await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+    emb.set_footer(text='Sent in #{}'.format(before.channel)) # Sets footer as the channel the message was sent and pinned in.
+    await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
 
 @client.event
 async def on_reaction_add(reaction, user): # The following code is executed on a reacton add event.
+  print(reaction.message.channel)
   if reaction.emoji == '📌': # If the reaction is a 📌, the following code is executed.
     if reaction.count == 7: # If there are 7 📌 reactions, the following code is executed.
       try: # The following code is attempted to be ran.
@@ -66,7 +67,7 @@ async def on_message(message): # The following code is executed on message event
       attachments = [message.attachments for message in x] # list of attachments for message objects in x.
       
       emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43) # Intilializes embed with description as index 0 of pinnedContent.
-      emb.set_author(name=pinnedNames[0], icon_url=pinnedAvatars[0]) # Sets the embeds avatar and name that matches to the corresponding information in x.
+      emb.set_author(name=pinnedNames[0], icon_url=pinnedAvatars[0], url='https://discordapp.com/channels/{0}/{1}/{2}'.format('260272353118912522', message.channel.id, message.id)) # Sets the embeds avatar and name that matches to the corresponding information in x.
       
       if attachments[0] != []: # If the pinned message has an attachment, the following code is executed.
         imgContent = attachments[0][0]['url'] # Gets url of the attachment.
@@ -88,10 +89,10 @@ async def on_message(message): # The following code is executed on message event
           lastMessage = message # Variable for last message sent in #pin-archive
         await client.delete_message(lastMessage) # Deletes lastMessage.
     
-    if message.content.startswith('+todo'):
-      if message.author.id == '357652932377837589':
-        todoContent = message.content.replace('+todo ', '')
-        await client.send_message(message.author, todoContent)
+    if message.content.startswith('+todo'):  # If the messsage starts with +todo, the following code is executed.
+      if message.author.id == '357652932377837589': # If the message was sent by @Nitr0us#5090 the following code is executed.
+        todoContent = message.content.replace('+todo ', '') # Fetches the content of the message excluding the command.
+        await client.send_message(message.author, todoContent) # Sends todoContent to the message author via direct messages.
 
     if message.content.startswith('+archive'): # If the message starts with +archive, the following code is executed.
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
@@ -106,16 +107,16 @@ async def on_message(message): # The following code is executed on message event
           msgChannel = msg.channel # msgChannel as channel name the message was pinned in.
    
           emb = discord.Embed(description = pinContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
-          emb.set_author(name=name, icon_url=avatar) # Sets author and avatar url of the author of pinned message.
+          emb.set_author(name=name, icon_url=avatar, url='https://discordapp.com/channels/{0}/{1}/{2}'.format('260272353118912522', message.channel.id, message.id)) # Sets author and avatar url of the author of pinned message.
     
           if attachments != []: # If the pinned message has an attachment, the following code is executed.
             imgContent = attachments[0]['url'] # Gets url of the attachment.
             emb.set_image(url=imgContent) # Sets image url as embed image.
       
           emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
-          await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
-          await asyncio.sleep(10)
-          await client.delete_message(message)
+          await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+          await asyncio.sleep(10) # Adds a 10 second delay bew for the next line of code is executed.
+          await client.delete_message(message) # Deletes the initial command message.
         
         except discord.errors.HTTPException: # If an http exception is raised in the code above, the following code is executed. Usually indicates an invalid message id.
           emb = discord.Embed(description='Error: Message not found, try again.', color = 0xcf1c43) # Intializes embed.
