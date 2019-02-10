@@ -33,7 +33,7 @@ async def on_message_edit(before, after): # The following code is executed on me
       imgContent = attachments[0]['url'] # Gets url of the attachment.
       emb.set_image(url=imgContent) # Sets image url as embed image.
       
-    emb.set_footer(text='[Sent in #{0}](https://discordapp.com/channels/{1}/{2}/{3})'.format(msgChannel, 260272353118912522, message.channel.id, message.id)) # Sets footer as the channel the message was sent and pinned in.
+    emb.set_footer(text='[Sent in #{0}](https://discordapp.com/channels/{1}/{2}/{3})'.format(msgChannel, 260272353118912522, before.channel.id, before.id)) # Sets footer as the channel the message was sent and pinned in.
     await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
 
 @client.event
