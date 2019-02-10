@@ -43,6 +43,14 @@ async def on_reaction_add(reaction, user): # The following code is executed on a
       try: # The following code is attempted to be ran.
         await client.pin_message(reaction.message) # Pins the message.
         
+  if reaction in message.author:
+    print('yeet')
+    if reaction.emoji == ':white_check_mark:':
+      print('yeet2')
+      x = await client.get_message(message.author, reaction.message.id)
+      await client.delete_message(x)
+      
+        
       except discord.errors.HTTPException: # If an http exception is raised, usually indicating the max number of pins has been reached, the following code is executed.
         x = await client.pins_from(reaction.message.channel) # Returns list of pinned messages as message objects.
         pinnedIds = [message.id for message in x] # Returnns list of message objects as message ids.
@@ -66,7 +74,7 @@ async def on_message(message): # The following code is executed on message event
       attachments = [message.attachments for message in x] # list of attachments for message objects in x.
       
       emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43) # Intilializes embed with description as index 0 of pinnedContent.
-      emb.set_author(name=pinnedNames[0], icon_url=pinnedAvatars[0]) # Sets the embeds avatar and name that matches to the corresponding information in x.
+      emb.set_author(name=name, icon_url=avatar, url='https://discordapp.com/channels/{0}/{1}/{2}'.format('260272353118912522', message.channel.id, message.id)) # Sets the embeds avatar and name that matches to the corresponding information in x.
       
       if attachments[0] != []: # If the pinned message has an attachment, the following code is executed.
         imgContent = attachments[0][0]['url'] # Gets url of the attachment.
@@ -106,7 +114,7 @@ async def on_message(message): # The following code is executed on message event
           msgChannel = msg.channel # msgChannel as channel name the message was pinned in.
    
           emb = discord.Embed(description = pinContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
-          emb.set_author(name=name, icon_url=avatar) # Sets author and avatar url of the author of pinned message.
+          emb.set_author(name=name, icon_url=avatar, url='https://discordapp.com/channels/{0}/{1}/{2}'.format('260272353118912522', message.channel.id, message.id)) # Sets author and avatar url of the author of pinned message.
     
           if attachments != []: # If the pinned message has an attachment, the following code is executed.
             imgContent = attachments[0]['url'] # Gets url of the attachment.
