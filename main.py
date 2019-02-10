@@ -26,7 +26,7 @@ async def on_message_edit(before, after): # The following code is executed on me
     pinContent = before.content # pinContent as string of pinned message.
     msgChannel = before.channel # msgChannel as channel name the message was pinned in.
    
-    emb = discord.Embed(description = pinnedContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
+    emb = discord.Embed(description = pinContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
     emb.set_author(name=name, icon_url=avatar, url='https://discordapp.com/channels/{0}/{1}/{2}'.format('260272353118912522', before.channel.id, before.id)) # Sets author and avatar url of the author of pinned message.
     
     if attachments != []: # If the pinned message has an attachment, the following code is executed.
