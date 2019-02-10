@@ -34,7 +34,7 @@ async def on_message_edit(before, after): # The following code is executed on me
       emb.set_image(url=imgContent) # Sets image url as embed image.
       
     emb.set_footer(text='[Sent in #{0}](https://discordapp.com/channels/{1}/{2}/{3})'.format(msgChannel, 260272353118912522, before.channel.id, before.id)) # Sets footer as the channel the message was sent and pinned in.
-    await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
+    await client.send_message(discord.Object(id='536761750242983937'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
 
 @client.event
 async def on_reaction_add(reaction, user): # The following code is executed on a reacton add event.
