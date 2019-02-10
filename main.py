@@ -107,7 +107,7 @@ async def on_message(message): # The following code is executed on message event
           msgChannel = msg.channel # msgChannel as channel name the message was pinned in.
    
           emb = discord.Embed(description = pinContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
-          emb.set_author(name=name, icon_url=avatar, url='https://discordapp.com/channels/{0}/{1}/{2}'.format('260272353118912522', message.channel.id, message.id)) # Sets author and avatar url of the author of pinned message.
+          emb.set_author(name=name, icon_url=avatar, url='https://discordapp.com/channels/{0}/{1}/{2}'.format('260272353118912522', msg.channel.id, msg.id)) # Sets author and avatar url of the author of pinned message.
     
           if attachments != []: # If the pinned message has an attachment, the following code is executed.
             imgContent = attachments[0]['url'] # Gets url of the attachment.
