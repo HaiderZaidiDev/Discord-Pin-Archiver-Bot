@@ -50,7 +50,7 @@ async def on_reaction_add(reaction, user): # The following code is executed on a
         await client.unpin_message(oldestPin) # Unpins the oldest message.
         await client.pin_message(reaction.message) # Pins the new message.
   
-  if reaction in message.author:
+  if reaction.message.channel == message.author:
     print('yeet1')
     if reaction.emoji == ':white_check_mark:':
       print('yeet2')
