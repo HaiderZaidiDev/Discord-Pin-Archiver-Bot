@@ -38,7 +38,6 @@ async def on_message_edit(before, after): # The following code is executed on me
 
 @client.event
 async def on_reaction_add(reaction, user): # The following code is executed on a reacton add event.
-  print(reaction.message.channel)
   if reaction.emoji == '📌': # If the reaction is a 📌, the following code is executed.
     if reaction.count == 7: # If there are 7 📌 reactions, the following code is executed.
       try: # The following code is attempted to be ran.
