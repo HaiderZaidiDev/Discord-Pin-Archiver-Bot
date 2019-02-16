@@ -83,11 +83,6 @@ async def on_message(message): # The following code is executed on message event
         async for message in client.logs_from(discord.Object(id='538545784497504276'), limit = 1): # Fetches last message in the channel #pin-archive
           lastMessage = message # Variable for last message sent in #pin-archive
         await client.delete_message(lastMessage) # Deletes lastMessage.
-    
-    if message.content.startswith('+todo'):  # If the messsage starts with +todo, the following code is executed.
-      if message.author.id == '357652932377837589': # If the message was sent by @Nitr0us#5090 the following code is executed.
-        todoContent = message.content.replace('+todo ', '') # Fetches the content of the message excluding the command.
-        await client.send_message(message.author, todoContent) # Sends todoContent to the message author via direct messages.
 
     if message.content.startswith('+archive'): # If the message starts with +archive, the following code is executed.
       if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
