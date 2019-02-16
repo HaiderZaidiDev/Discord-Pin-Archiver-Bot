@@ -6,8 +6,8 @@ client = discord.Client()
 
 
 @client.event
-async def on_ready(
-):  # When the bot goes online, the following code is executed.
+async def on_ready():
+    """Print a startup message."""
     print(str(client.user) + ' is online.')  # Prints operational message.
 
 
