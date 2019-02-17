@@ -227,15 +227,19 @@ def try_config(config, heading, key):
 
 
 if __name__ == "__main__":
+    # Parse command-line arguments for the token and the config file path.
+    # It uses a positional argument for the token and a flag -c/--config to
+    # specify the path to the config file.
     parser = argparse.ArgumentParser()
     parser.add_argument("token")
     parser.add_argument(
         "-c", "--config", help="Config file path", default="config.ini")
     args = parser.parse_args()
 
+    # Parse the config file at the given path, erroring out if keys are missing
+    # in the config.
     config = configparser.ConfigParser()
     config.read(args.config)
-
     try:
         ARCHIVE_CHANNEL = try_config(config, "IDs", "ArchiveChannel")
         SERVER = try_config(config, "IDs", "Server")
