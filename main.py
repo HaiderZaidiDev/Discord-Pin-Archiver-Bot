@@ -1,151 +1,253 @@
-#--- Imports
-import discord # Imports discord library.
-import sys # Imports sys library. 
-import os
+import argparse
+import configparser
+import discord
+import sys
 import asyncio
+from ast import literal_eval
 
-client = discord.Client() # Initializes bot as client.
+client = discord.Client()
+config = None
+ARCHIVE_CHANNEL = None
+SERVER = None
+SUPER_ROLES = None
+SUPER_USERS = None
+REACTION_EMOJI = None
+REACTION_COUNT = None
 
-@client.event 
-async def on_ready(): # When the bot goes online, the following code is executed.
-  print(str(client.user) + ' is online.') # Prints operational message.
-     
-@client.event
-async def on_message_edit(before, after): # The following code is executed on message edit even (whenever a message is pinned/edited).
-  x = await client.pins_from(before.channel) # Returns list of pins as message objects.
-  pinnedIds = [message.id for message in x] # Returns list of pins as message ids.
-  attachments = before.attachments # Returns list of message attachments in dictionaries.
-  
-  if len(pinnedIds) == 50: # If the last pinned messages makes the channel reach the total limit of pins, the following code is executed.
-    oldestPin = await client.get_message(before.channel, pinnedIds[-1]) # Fetches the oldest pinned message.
-    await client.unpin_message(oldestPin) # Unpins the oldest pinned message.
-
-  if before.author != client.user and before.id in pinnedIds and before.author.bot == False and before.content != '': # If the message was not sent by a bot, and is the last pinned message in the channel, the following code is executed.
-    name = before.author.display_name # Name as author of message.
-    avatar = before.author.avatar_url # Avatar as avatar url of message author.
-    pinContent = before.content # pinContent as string of pinned message.
-    msgChannel = before.channel # msgChannel as channel name the message was pinned in.
-   
-    emb = discord.Embed(description = pinContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
-    emb.set_author(name=name, icon_url=avatar, url='https://discordapp.com/channels/{0}/{1}/{2}'.format('260272353118912522', before.channel.id, before.id)) # Sets author and avatar url of the author of pinned message.
-    
-    if attachments != []: # If the pinned message has an attachment, the following code is executed.
-      imgContent = attachments[0]['url'] # Gets url of the attachment.
-      emb.set_image(url=imgContent) # Sets image url as embed image.
-      
-    emb.set_footer(text='Sent in #{}'.format(before.channel)) # Sets footer as the channel the message was sent and pinned in.
-    await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
 
 @client.event
-async def on_reaction_add(reaction, user): # The following code is executed on a reacton add event.
-  if reaction.emoji == '📌': # If the reaction is a 📌, the following code is executed.
-    if reaction.count == 7: # If there are 7 📌 reactions, the following code is executed.
-      try: # The following code is attempted to be ran.
-        await client.pin_message(reaction.message) # Pins the message.
-        
-      except discord.errors.HTTPException: # If an http exception is raised, usually indicating the max number of pins has been reached, the following code is executed.
-        x = await client.pins_from(reaction.message.channel) # Returns list of pinned messages as message objects.
-        pinnedIds = [message.id for message in x] # Returnns list of message objects as message ids.
-        oldestPin = await client.get_message(reaction.message.channel, pinnedIds[-1]) # Fetches the oldest pinned message in the channel.
-        await client.unpin_message(oldestPin) # Unpins the oldest message.
-        await client.pin_message(reaction.message) # Pins the new message.
- 
+async def on_ready():
+    """Print a startup message."""
+    print(str(client.user) + ' is online.')  # Prints operational message.
+
+
 @client.event
-async def on_message(message): # The following code is executed on message event, parameter message
-  try:
-    userRoles = [role.name for role in message.author.roles]
-  except:
-    pass
-  
-  if message.author != client.user: # If the message is not from a bot, the following code is executed.
-    if message.content.startswith('+lastpin'): # If a user enters a message starting with +lastpin, the following code is executed.
-      x = await client.pins_from(message.channel) # Returns list of pins as message objects. 
-      pinnedNames = [message.author.display_name for message in x] # list of names for message objects in x.
-      pinnedAvatars = [message.author.avatar_url for message in x] # list of avatar urls for message objects in x.
-      pinnedContent = [message.content for message in x] # list of message strings for message objects in x.
-      attachments = [message.attachments for message in x] # list of attachments for message objects in x.
-      
-      emb = discord.Embed(description = pinnedContent[0], color = 0xcf1c43) # Intilializes embed with description as index 0 of pinnedContent.
-      emb.set_author(name=pinnedNames[0], icon_url=pinnedAvatars[0], url='https://discordapp.com/channels/{0}/{1}/{2}'.format('260272353118912522', x[0].channel.id, x[0].id)) # Sets the embeds avatar and name that matches to the corresponding information in x.
-      
-      if attachments[0] != []: # If the pinned message has an attachment, the following code is executed.
-        imgContent = attachments[0][0]['url'] # Gets url of the attachment.
-        emb.set_image(url=imgContent) # Sets image url as embed image.
-        
-      await client.send_message(message.channel, embed=emb) # Sends message containing embed to channel message was executed in. 
-    
-    if message.content == str('+status'): # If the message starts with +status, the following code is executed.
-      emb = discord.Embed(description = 'Online.', color = 0xcf1c43) # Intilializes embed with online message.
-      await client.send_message(message.channel, embed=emb) # Sends message containing embed to channel message was executed in. 
-      
-    if message.content.startswith('+del'): # If the message starts with +del, the following code is executed.
-      if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
-        async for message in client.logs_from(discord.Object(id='538545784497504276'), limit = 1): # Fetches last message in the channel #pin-archive
-          lastMessage = message # Variable for last message sent in #pin-archive
-        await client.delete_message(lastMessage) # Deletes lastMessage.
+async def on_message_edit(before, after):
+    """Main function for handling message edit events."""
+    x = await client.pins_from(before.channel)
+    pinned_ids = [message.id for message in x]
+    attachments = before.attachments
 
-    if message.content.startswith('+archive'): # If the message starts with +archive, the following code is executed.
-      if str('Administrator') in userRoles or str('Moderator') in userRoles or message.author.id == '357652932377837589': # If the user is an Administrator, Moderator or @Nitr0us#5090 the following code is executed.
-        try: # The following code is attempted to be ran.
-          msgIdToArchive = message.content.replace('+archive ', '') # Isolates the message id.
-          msg = await client.get_message(message.channel, msgIdToArchive) # Gets a message object from the id.
-          attachments = msg.attachments # Returns list of message attachments in dictionaries.
+    if len(pinned_ids) == 50:
+        oldest_pin = await client.get_message(before.channel, pinned_ids[-1])
+        await client.unpin_message(oldest_pin)
 
-          name = msg.author.display_name # Name as author of message.
-          avatar = msg.author.avatar_url # Avatar as avatar url of message author.
-          pinContent = msg.content # pinContent as string of pinned message.
-          msgChannel = msg.channel # msgChannel as channel name the message was pinned in.
-   
-          emb = discord.Embed(description = pinContent, color = 0xcf1c43) # Initalizes embed with description pinContent.
-          emb.set_author(name=name, icon_url=avatar, url='https://discordapp.com/channels/{0}/{1}/{2}'.format('260272353118912522', msg.channel.id, msg.id)) # Sets author and avatar url of the author of pinned message.
-    
-          if attachments != []: # If the pinned message has an attachment, the following code is executed.
-            imgContent = attachments[0]['url'] # Gets url of the attachment.
-            emb.set_image(url=imgContent) # Sets image url as embed image.
-      
-          emb.set_footer(text='Sent in #{}'.format(msgChannel)) # Sets footer as the channel the message was sent and pinned in.
-          await client.send_message(discord.Object(id='538545784497504276'), embed=emb) # Sends message containing embed to specified channel (presumably a log channel i.e #pins-archive).
-          await asyncio.sleep(10) # Adds a 10 second delay bew for the next line of code is executed.
-          await client.delete_message(message) # Deletes the initial command message.
-        
-        except discord.errors.HTTPException: # If an http exception is raised in the code above, the following code is executed. Usually indicates an invalid message id.
-          emb = discord.Embed(description='Error: Message not found, try again.', color = 0xcf1c43) # Intializes embed.
-          await client.send_message(message.channel, embed=emb) # Outputs embed to current channel.
-    
-    if message.content.startswith('+help'): # If the message starts with +help, the following code is executed.
-      helpMsg = '''
+    if before.author != client.user and before.id in pinned_ids  \
+            and before.author.bot is False and before.content != '':
+        name = before.author.display_name
+        avatar = before.author.avatar_url
+        pin_content = before.content
+
+        emb = discord.Embed(
+            description=pin_content,
+            color=0xcf1c43)  # Initalizes embed with description pin_content.
+        emb.set_author(
+            name=name,
+            icon_url=avatar,
+            url='https://discordapp.com/channels/{0}/{1}/{2}'.format(
+                SERVER, before.channel.id, before.id)
+        )  # Sets author and avatar url of the author of pinned message.
+
+        # Set attachemnt image url as embed image if it exists
+        if attachments:
+            img_url = attachments[0]['url']
+            emb.set_image(url=img_url)
+
+        # Sets footer as the channel the message was sent and pinned in.
+        emb.set_footer(text='Sent in #{}'.format(before.channel))
+
+        # Finally send the message to the pin archiving channel.
+        await client.send_message(
+            discord.Object(id=ARCHIVE_CHANNEL), embed=emb)
+
+
+@client.event
+async def on_reaction_add(reaction, user):
+    if reaction.emoji == REACTION_EMOJI:
+        if reaction.count == REACTION_COUNT:
+            try:
+                await client.pin_message(reaction.message)
+            # This exception thrown when pins are full, usually
+            except discord.errors.HTTPException:
+                x = await client.pins_from(reaction.message.channel)
+                pinned_ids = [message.id for message in x]
+                oldest_pin = await client.get_message(reaction.message.channel,
+                                                      pinned_ids[-1])
+                await client.unpin_message(oldest_pin)
+                await client.pin_message(reaction.message)
+
+
+def check_super_perms(message):
+    """Check that the message came from a user with "super" permissions.
+
+    See config file [Perms]."""
+    has_super_role = any(
+        True for role in message.author.roles if role in SUPER_ROLES)
+    return message.author.id in SUPER_USERS or has_super_role
+
+
+@client.event
+async def on_message(message):
+    """Handle commands."""
+    # If the message is not from a bot, the following code is executed.
+    if message.author != client.user:
+        if message.content.startswith('+lastpin'):
+            x = await client.pins_from(message.channel)
+            pinned_names = [message.author.display_name for message in x]
+            pinned_avatars = [message.author.avatar_url for message in x]
+            pinned_content = [message.content for message in x]
+            attachments = [message.attachments for message in x]
+
+            # Description is the contents of the first pinned message
+            emb = discord.Embed(description=pinned_content[0], color=0xcf1c43)
+            # Match author information from pinned message
+            emb.set_author(
+                name=pinned_names[0],
+                icon_url=pinned_avatars[0],
+                url='https://discordapp.com/channels/{0}/{1}/{2}'.format(
+                    SERVER, x[0].channel.id, x[0].id))
+
+            # Handle attachments in pins
+            if attachments[0]:
+                img_content = attachments[0][0]['url']
+                emb.set_image(url=img_content)
+
+            await client.send_message(message.channel, embed=emb)
+
+        if message.content == '+status':
+            emb = discord.Embed(description='Online.', color=0xcf1c43)
+            await client.send_message(message.channel, embed=emb)
+
+        if message.content.startswith('+del'):
+            if not check_super_perms(message):
+                return
+
+            # Fetch the last message in the channel #pin-archive and delete
+            async for message in client.logs_from(
+                    discord.Object(id=ARCHIVE_CHANNEL), limit=1):
+                last_message = message
+            await client.delete_message(last_message)
+
+        if message.content.startswith('+archive'):
+            # See above
+            if not check_super_perms(message):
+                return
+            try:
+                # Extract the message ID
+                id_to_archive = message.content.replace('+archive ', '')
+                msg = await client.get_message(message.channel, id_to_archive)
+                attachments = msg.attachments
+
+                name = msg.author.display_name
+                avatar = msg.author.avatar_url
+                pin_content = msg.content
+                message_channel = msg.channel
+
+                emb = discord.Embed(description=pin_content, color=0xcf1c43)
+                emb.set_author(
+                    name=name,
+                    icon_url=avatar,
+                    url='https://discordapp.com/channels/{0}/{1}/{2}'.format(
+                        SERVER, msg.channel.id, msg.id))
+
+                # Handle attachments
+                if attachments:
+                    img_content = attachments[0]['url']
+                    emb.set_image(url=img_content)
+
+                emb.set_footer(text='Sent in #{}'.format(message_channel))
+                await client.send_message(
+                    discord.Object(id=ARCHIVE_CHANNEL), embed=emb)
+                await asyncio.sleep(10)
+                await client.delete_message(message)
+                # Deletes the initial command message.
+
+            # If this exception is thrown, it usually means we had an
+            # invalid message ID.
+            except discord.errors.HTTPException:
+                emb = discord.Embed(
+                    description='Error: Message not found, try again.',
+                    color=0xcf1c43)
+                await client.send_message(message.channel, embed=emb)
+
+        if message.content.startswith('+help'):
+            help_message = '''
        __**Information**__:
-        
+
         This bot was made by @Nitr0us#5090, if you have any questions or require support please contact him.
-        
+
        __**Features**__:
-        
+
         **1)** Last Pinned Message:
-        Usage: +lastpin 
+        Usage: +lastpin
         Purpose: Displays the last pinned message of the current channel.
-        
+
         **2)** Archive Pinned Messages (Automatic):
         Usage: Automatic
-        Usage Alternate: Culminate 7 pin reactions on a message.
-        Purpose: To archive all pinned messages to #pin-archive. 
-        
+        Usage Alternate: Culminate {0} pin reactions on a message.
+        Purpose: To archive all pinned messages to #pin-archive.
+
         **3)** Archive Messages (Manual)
         Usage: +archive <messageid>
         Permission: Administrators & Moderators
         Purpose: To archive a message to #pin-archive, regardless whether the message is pinned.
-        
+
         **4)** Status:
         Usage: +status
         Purpose: Notifies you if the bot is online.
-        
+
         **5)** Delete:
         Usage: +del
         Permission: Administrators & Moderators
         Purpose: To delete the last pinned message in #pin-archive.
-      ''' 
-      emb = discord.Embed(description=helpMsg, color = 0xcf1c43) # Intializes embed with help message as description.
-      await client.send_message(message.channel, embed=emb) # Sends message containing embed to the channel the command was executed in.
+      '''.format(REACTION_COUNT)
+            emb = discord.Embed(description=help_message, color=0xcf1c43)
+            await client.send_message(message.channel, embed=emb)
 
-client.run(sys.argv[1]) # Runs bot with token as system argument. 
-client.close()
-  
+
+def try_config(config, heading, key):
+    """Attempt to extract config[heading][key], with error handling.
+
+    This function wraps config access with a try-catch to print out informative
+    error messages and then exit."""
+    try:
+        section = config[heading]
+    except KeyError:
+        print("Missing config section [{}]".format(heading))
+        sys.exit(1)
+
+    try:
+        value = section[key]
+    except KeyError:
+        print("Missing config key '{}' under section '[{}]'".format(
+            key, heading))
+        sys.exit(1)
+
+    return value
+
+
+if __name__ == "__main__":
+    # Parse command-line arguments for the token and the config file path.
+    # It uses a positional argument for the token and a flag -c/--config to
+    # specify the path to the config file.
+    parser = argparse.ArgumentParser()
+    parser.add_argument("token")
+    parser.add_argument(
+        "-c", "--config", help="Config file path", default="config.ini")
+    args = parser.parse_args()
+
+    # Parse the config file at the given path, erroring out if keys are missing
+    # in the config.
+    config = configparser.ConfigParser()
+    config.read(args.config)
+    try:
+        ARCHIVE_CHANNEL = try_config(config, "IDs", "ArchiveChannel")
+        SERVER = try_config(config, "IDs", "Server")
+        SUPER_ROLES = literal_eval(try_config(config, "Perms", "SuperRoles"))
+        SUPER_USERS = literal_eval(try_config(config, "Perms", "SuperUsers"))
+        REACTION_EMOJI = try_config(config, "Reacts", "Emoji")
+        REACTION_COUNT = literal_eval(try_config(config, "Reacts", "Count"))
+    except KeyError:
+        sys.exit(1)
+
+    client.run(args.token)
