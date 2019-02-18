@@ -11,5 +11,5 @@ Pin Archiver has the following features:
 * Delete the oldest pinned message in the channel once the maximum number of pinned messages has been reached.
 
 ## Usage
-If you would like to use this bot in your own server please feel free to clone the repository and host it yourself. If you go this route, you will need to edit the various channel and user-ids in the code for the bot to work properly. 
+If you would like to use this bot in your own server please feel free to clone the repository and host it yourself. If you go this route, you will need to edit the various channel and user-ids in `config.ini` for the bot to work properly. 
 
