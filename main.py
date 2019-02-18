@@ -82,7 +82,7 @@ def check_super_perms(message):
 
     See config file [Perms]."""
     has_super_role = any(
-        True for role in message.author.roles if role in SUPER_ROLES)
+        True for role in message.author.roles if role.name in SUPER_ROLES)
     return message.author.id in SUPER_USERS or has_super_role
 
 
