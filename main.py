@@ -141,7 +141,6 @@ async def on_message(message):
                 name = msg.author.display_name
                 avatar = msg.author.avatar_url
                 pin_content = msg.content
-                message_channel = msg.channel
 
                 emb = discord.Embed(description=pin_content, color=0xcf1c43)
                 emb.set_author(
@@ -155,7 +154,7 @@ async def on_message(message):
                     img_content = attachments[0]['url']
                     emb.set_image(url=img_content)
 
-                emb.set_footer(text='Sent in #{}'.format(message_channel))
+                emb.set_footer(text='Sent in #{}'.format(msg.channel))
                 await client.send_message(
                     discord.Object(id=ARCHIVE_CHANNEL), embed=emb)
                 await asyncio.sleep(10)
@@ -194,12 +193,12 @@ async def on_message(message):
 
         **4)** Status:
         Usage: +status
-        Purpose: Notifies you if the bot is online.
-
+        Purpose: Notifies the user if the bot is online.
+        
         **5)** Delete:
         Usage: +del
         Permission: Administrators & Moderators
-        Purpose: To delete the last pinned message in #pin-archive.
+        Purpose: To delete the last message in #pin-archive.
       '''.format(REACTION_COUNT)
             emb = discord.Embed(description=help_message, color=0xcf1c43)
             await client.send_message(message.channel, embed=emb)
