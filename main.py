@@ -40,7 +40,7 @@ async def on_message_edit(before, after):
 
         emb = discord.Embed(
             description=pin_content,
-            color=0xcf1c43)  # Initalizes embed with description pin_content.
+            color=0x7289da)  # Initalizes embed with description pin_content.
         emb.set_author(
             name=name,
             icon_url=avatar,
@@ -99,7 +99,7 @@ async def on_message(message):
             attachments = [message.attachments for message in x]
 
             # Description is the contents of the first pinned message
-            emb = discord.Embed(description=pinned_content[0], color=0xcf1c43)
+            emb = discord.Embed(description=pinned_content[0], color=0x7289da)
             # Match author information from pinned message
             emb.set_author(
                 name=pinned_names[0],
@@ -115,7 +115,7 @@ async def on_message(message):
             await client.send_message(message.channel, embed=emb)
 
         if message.content == '+status':
-            emb = discord.Embed(description='Online.', color=0xcf1c43)
+            emb = discord.Embed(description='Online.', color=0x7289da)
             await client.send_message(message.channel, embed=emb)
 
         if message.content.startswith('+del'):
@@ -142,7 +142,7 @@ async def on_message(message):
                 avatar = msg.author.avatar_url
                 pin_content = msg.content
 
-                emb = discord.Embed(description=pin_content, color=0xcf1c43)
+                emb = discord.Embed(description=pin_content, color=0x7289da)
                 emb.set_author(
                     name=name,
                     icon_url=avatar,
@@ -166,7 +166,7 @@ async def on_message(message):
             except discord.errors.HTTPException:
                 emb = discord.Embed(
                     description='Error: Message not found, try again.',
-                    color=0xcf1c43)
+                    color=0x7289da)
                 await client.send_message(message.channel, embed=emb)
 
         if message.content.startswith('+help'):
@@ -200,7 +200,7 @@ async def on_message(message):
         Permission: Administrators & Moderators
         Purpose: To delete the last message in #pin-archive.
       '''.format(REACTION_COUNT)
-            emb = discord.Embed(description=help_message, color=0xcf1c43)
+            emb = discord.Embed(description=help_message, color=0x7289da)
             await client.send_message(message.channel, embed=emb)
 
 
