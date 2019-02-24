@@ -19,7 +19,7 @@ REACTION_COUNT = None
 async def on_ready():
     """Print a startup message."""
     print(str(client.user) + ' is online.')  # Prints operational message.
-    await client.change_status(game=discord.Game(name='v1.0 | +help'))
+    await client.change_presence(game=discord.Game(name='v1.0 | +help'))
 
 
 @client.event
