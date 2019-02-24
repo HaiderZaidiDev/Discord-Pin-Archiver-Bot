@@ -166,7 +166,7 @@ async def on_message(message):
             # invalid message ID.
             except discord.errors.HTTPException:
                 emb = discord.Embed(
-                    description='Error: Message not found, try again.',
+                    description='Error: Message not found in #{}, try again.'.format(message.channel),
                     color=0x7289da)
                 await client.send_message(message.channel, embed=emb)
 
