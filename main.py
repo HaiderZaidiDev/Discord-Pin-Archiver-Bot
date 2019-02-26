@@ -164,11 +164,12 @@ async def on_message(message):
 
             # If this exception is thrown, it usually means we had an
             # invalid message ID.
-            except discord.errors.HTTPException:
+            except discord.errors.HTTPException as e:
                 emb = discord.Embed(
                     description='Error: Message not found in #{}, try again.'.format(message.channel),
                     color=0x7289da)
                 await client.send_message(message.channel, embed=emb)
+                print(e)
 
         if message.content.startswith('+help'):
             help_message = '''
