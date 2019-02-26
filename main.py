@@ -50,7 +50,7 @@ async def on_message_edit(before, after):
         )  # Sets author and avatar url of the author of pinned message.
 
         # Set attachemnt image url as embed image if it exists
-        if attachments[0]:
+        if attachments:
             img_url = attachments[0]['url']
             emb.set_image(url=img_url)
 
@@ -109,7 +109,7 @@ async def on_message(message):
                     SERVER, x[0].channel.id, x[0].id))
 
             # Handle attachments in pins
-            if attachments[0]:
+            if attachments:
                 img_content = attachments[0][0]['url']
                 emb.set_image(url=img_content)
 
@@ -151,7 +151,7 @@ async def on_message(message):
                         SERVER, msg.channel.id, msg.id))
 
                 # Handle attachments
-                if attachments[0]:
+                if attachments:
                     img_content = attachments[0]['url']
                     emb.set_image(url=img_content)
 
