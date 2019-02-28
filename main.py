@@ -34,6 +34,7 @@ async def on_message_edit(before, after):
         await client.unpin_message(oldest_pin)
 
     if before.pinned:
+        print('test')
         name = before.author.display_name
         avatar = before.author.avatar_url
         pin_content = before.content
