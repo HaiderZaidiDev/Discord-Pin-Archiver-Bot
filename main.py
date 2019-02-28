@@ -25,16 +25,13 @@ async def on_ready():
 @client.event
 async def on_message_edit(before, after):
     """Main function for handling message edit events."""
-    x = await client.pins_from(before.channel)
-    pinned_ids = [message.id for message in x]
     attachments = before.attachments
 
     if len(pinned_ids) == 50:
         oldest_pin = await client.get_message(before.channel, pinned_ids[-1])
         await client.unpin_message(oldest_pin)
 
-    if before.author != client.user and before.id in pinned_ids  \
-            and before.author.bot is False and before.content != '':
+    if before.pinned:
         name = before.author.display_name
         avatar = before.author.avatar_url
         pin_content = before.content
