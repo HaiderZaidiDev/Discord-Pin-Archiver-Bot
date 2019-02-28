@@ -104,7 +104,7 @@ async def on_message(message):
             emb = discord.Embed(description=pinned_content, color=0x7289da)
             # Match author information from pinned message
             emb.set_author(
-                name=pinned_names
+                name=pinned_names,
                 icon_url=pinned_avatars,
                 url='https://discordapp.com/channels/{0}/{1}/{2}'.format(
                     SERVER, lastPin.channel.id, lastPin.id))
