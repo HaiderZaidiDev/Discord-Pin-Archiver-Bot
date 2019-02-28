@@ -27,17 +27,16 @@ async def on_message_edit(before, after):
     """Main function for handling message edit events."""
     x = await client.pins_from(before.channel)
     pinned_ids = [message.id for message in x]
-    attachments = before.attachments
+    attachments = after.attachments
 
     if len(pinned_ids) == 50:
-        oldest_pin = await client.get_message(before.channel, pinned_ids[-1])
+        oldest_pin = await client.get_message(after.channel, pinned_ids[-1])
         await client.unpin_message(oldest_pin)
 
-    if before.pinned:
-        print('test')
-        name = before.author.display_name
-        avatar = before.author.avatar_url
-        pin_content = before.content
+    if after.pinned:
+        name = after.author.display_name
+        avatar = after.author.avatar_url
+        pin_content = after.content
 
         emb = discord.Embed(
             description=pin_content,
@@ -46,7 +45,7 @@ async def on_message_edit(before, after):
             name=name,
             icon_url=avatar,
             url='https://discordapp.com/channels/{0}/{1}/{2}'.format(
-                SERVER, before.channel.id, before.id)
+                SERVER, after.channel.id, after.id)
         )  # Sets author and avatar url of the author of pinned message.
 
         # Set attachemnt image url as embed image if it exists
@@ -55,7 +54,7 @@ async def on_message_edit(before, after):
             emb.set_image(url=img_url)
 
         # Sets footer as the channel the message was sent and pinned in.
-        emb.set_footer(text='Sent in #{}'.format(before.channel))
+        emb.set_footer(text='Sent in #{}'.format(after.channel))
 
         # Finally send the message to the pin archiving channel.
         await client.send_message(
