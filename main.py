@@ -94,19 +94,20 @@ async def on_message(message):
     if message.author != client.user:
         if message.content.startswith('+lastpin'):
             x = await client.pins_from(message.channel)
-            pinned_names = [message.author.display_name for message in x]
-            pinned_avatars = [message.author.avatar_url for message in x]
-            pinned_content = [message.content for message in x]
-            attachments = [message.attachments for message in x]
+            lastPin = x[0]
+            pinned_names = lastPin.author.display_name 
+            pinned_avatars = lastPin.author.avatar_url 
+            pinned_content = lastPin.content
+            attachments = lastPin.attachments
 
             # Description is the contents of the first pinned message
-            emb = discord.Embed(description=pinned_content[0], color=0x7289da)
+            emb = discord.Embed(description=pinned_content, color=0x7289da)
             # Match author information from pinned message
             emb.set_author(
-                name=pinned_names[0],
-                icon_url=pinned_avatars[0],
+                name=pinned_names,
+                icon_url=pinned_avatars,
                 url='https://discordapp.com/channels/{0}/{1}/{2}'.format(
-                    SERVER, x[0].channel.id, x[0].id))
+                    SERVER, lastPin.channel.id, lastPin.id))
 
             # Handle attachments in pins
             if attachments:
