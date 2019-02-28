@@ -25,6 +25,8 @@ async def on_ready():
 @client.event
 async def on_message_edit(before, after):
     """Main function for handling message edit events."""
+    x = await client.pins_from(before.channel)
+    pinned_ids = [message.id for message in x]
     attachments = before.attachments
 
     if len(pinned_ids) == 50:
