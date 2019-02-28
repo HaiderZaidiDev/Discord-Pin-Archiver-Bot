@@ -101,13 +101,13 @@ async def on_message(message):
             attachments = lastPin.attachments
 
             # Description is the contents of the first pinned message
-            emb = discord.Embed(description=pinned_content[0], color=0x7289da)
+            emb = discord.Embed(description=pinned_content, color=0x7289da)
             # Match author information from pinned message
             emb.set_author(
-                name=pinned_names[0],
-                icon_url=pinned_avatars[0],
+                name=pinned_names
+                icon_url=pinned_avatars,
                 url='https://discordapp.com/channels/{0}/{1}/{2}'.format(
-                    SERVER, x[0].channel.id, x[0].id))
+                    SERVER, lastPin.channel.id, lastPin.id))
 
             # Handle attachments in pins
             if attachments:
