@@ -110,7 +110,7 @@ async def on_message(message):
 
             # Handle attachments in pins
             if attachments:
-                img_content = attachments[0][0]['url']
+                img_content = attachments[0]['url']
                 emb.set_image(url=img_content)
 
             await client.send_message(message.channel, embed=emb)
