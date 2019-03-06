@@ -33,7 +33,7 @@ async def on_message_edit(before, after):
         oldest_pin = await client.get_message(after.channel, pinned_ids[-1])
         await client.unpin_message(oldest_pin)
 
-    if after.pinned:
+    if after.pinned and after.author != client.user:
         name = after.author.display_name
         avatar = after.author.avatar_url
         pin_content = after.content
