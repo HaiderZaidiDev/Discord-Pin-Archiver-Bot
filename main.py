@@ -13,6 +13,7 @@ SUPER_ROLES = None
 SUPER_USERS = None
 REACTION_EMOJI = None
 REACTION_COUNT = None
+TOKEN = None
 
 
 @client.event
@@ -233,7 +234,6 @@ if __name__ == "__main__":
     # It uses a positional argument for the token and a flag -c/--config to
     # specify the path to the config file.
     parser = argparse.ArgumentParser()
-    parser.add_argument("token")
     parser.add_argument(
         "-c", "--config", help="Config file path", default="config.ini")
     args = parser.parse_args()
@@ -249,7 +249,8 @@ if __name__ == "__main__":
         SUPER_USERS = literal_eval(try_config(config, "Perms", "SuperUsers"))
         REACTION_EMOJI = try_config(config, "Reacts", "Emoji")
         REACTION_COUNT = literal_eval(try_config(config, "Reacts", "Count"))
+        TOKEN = try_config(config, "IDs", "Token")
     except KeyError:
         sys.exit(1)
 
-    client.run(args.token)
+    client.run(TOKEN)
