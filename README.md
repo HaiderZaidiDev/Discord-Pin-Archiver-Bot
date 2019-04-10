@@ -1,4 +1,4 @@
-![uWaterloo Logo](https://uwaterloo.ca/brand/sites/ca.brand/files/uploads/images/universityofwaterloo_logo_horiz_bk_0.png)
+![pinArchiver Banner](https://i.imgur.com/Tp8ScWW.jpg)
 # r/uWaterloo Discord Pin Archiver Bot
 Pin Archiver is a Discord bot that was specifically made for the [Discord server](https://discord.gg/ZZFJhdr) of the alumni ran [Subreddit](https://www.reddit.com/r/uwaterloo/) for the University of Waterloo. 
 
