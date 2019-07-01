@@ -20,19 +20,18 @@ TOKEN = None
 async def on_ready():
     """Print a startup message."""
     print(str(client.user) + ' is online.')  # Prints operational message.
-    await client.change_presence(game=discord.Game(name='v1.0 | +help'))
-
+    await client.change_presence(activity=discord.Game(name='v1.0 | +help'))
 
 @client.event
 async def on_message_edit(before, after):
     """Main function for handling message edit events."""
-    x = await client.pins_from(before.channel)
-    pinned_ids = [message.id for message in x]
+    channelPins = await before.channel.pins()
+    pinned_ids = [message.id for message in channelPins]
     attachments = after.attachments
 
     if len(pinned_ids) == 50:
-        oldest_pin = await client.get_message(after.channel, pinned_ids[-1])
-        await client.unpin_message(oldest_pin)
+        oldest_pin = await after.channel.fetch_message(pinned_ids[-1])
+        await unpin(oldest_pin)
 
     if after.pinned and after.author != client.user:
         name = after.author.display_name
@@ -58,25 +57,14 @@ async def on_message_edit(before, after):
         emb.set_footer(text='Sent in #{}'.format(after.channel))
 
         # Finally send the message to the pin archiving channel.
-        await client.send_message(
-            discord.Object(id=ARCHIVE_CHANNEL), embed=emb)
-
+        channel = client.get_channel(ARCHIVE_CHANNEL)
+        await channel.send(embed=emb)
 
 @client.event
 async def on_reaction_add(reaction, user):
     if reaction.emoji == REACTION_EMOJI:
         if reaction.count == REACTION_COUNT:
-            try:
-                await client.pin_message(reaction.message)
-            # This exception thrown when pins are full, usually
-            except discord.errors.HTTPException:
-                x = await client.pins_from(reaction.message.channel)
-                pinned_ids = [message.id for message in x]
-                oldest_pin = await client.get_message(reaction.message.channel,
-                                                      pinned_ids[-1])
-                await client.unpin_message(oldest_pin)
-                await client.pin_message(reaction.message)
-
+            await pin(reaction.message)
 
 def check_super_perms(message):
     """Check that the message came from a user with "super" permissions.
@@ -92,11 +80,11 @@ async def on_message(message):
     """Handle commands."""
     # If the message is not from a bot, the following code is executed.
     if message.author != client.user:
-        if message.content.startswith('+lastpin'):
-            x = await client.pins_from(message.channel)
-            lastPin = x[0]
-            pinned_names = lastPin.author.display_name 
-            pinned_avatars = lastPin.author.avatar_url 
+        if message.content == str('+lastpin'):
+            channelPins = await message.channel.pins()
+            lastPin = channelPins[0]
+            pinned_name = lastPin.author.display_name 
+            pinned_avatar = lastPin.author.avatar_url 
             pinned_content = lastPin.content
             attachments = lastPin.attachments
 
@@ -104,8 +92,8 @@ async def on_message(message):
             emb = discord.Embed(description=pinned_content, color=0x7289da)
             # Match author information from pinned message
             emb.set_author(
-                name=pinned_names,
-                icon_url=pinned_avatars,
+                name=pinned_name,
+                icon_url=pinned_avatar,
                 url='https://discordapp.com/channels/{0}/{1}/{2}'.format(
                     SERVER, lastPin.channel.id, lastPin.id))
 
@@ -115,21 +103,21 @@ async def on_message(message):
                 img_content = attachments[0]['url']
                 emb.set_image(url=img_content)
 
-            await client.send_message(message.channel, embed=emb)
+            await message.channel.send(embed=emb)
 
         if message.content == '+status':
             emb = discord.Embed(description='Online.', color=0x7289da)
-            await client.send_message(message.channel, embed=emb)
+            await message.channel.send(embed=emb)
 
         if message.content.startswith('+del'):
             if not check_super_perms(message):
                 return
 
             # Fetch the last message in the channel #pin-archive and delete
-            async for message in client.logs_from(
-                    discord.Object(id=ARCHIVE_CHANNEL), limit=1):
+            channel = client.get_channel(ARCHIVE_CHANNEL)
+            async for message in channel.history(limit=1):
                 last_message = message
-            await client.delete_message(last_message)
+            await last_message.delete()
 
         if message.content.startswith('+archive'):
             # See above
@@ -138,14 +126,14 @@ async def on_message(message):
             try:
                 # Extract the message ID
                 id_to_archive = message.content.replace('+archive ', '')
-                msg = await client.get_message(message.channel, id_to_archive)
+                msg = await message.channel.fetch_message(id_to_archive)
                 attachments = msg.attachments
 
                 name = msg.author.display_name
                 avatar = msg.author.avatar_url
-                pin_content = msg.content
+                pinned_content = msg.content
 
-                emb = discord.Embed(description=pin_content, color=0x7289da)
+                emb = discord.Embed(description=pinned_content, color=0x7289da)
                 emb.set_author(
                     name=name,
                     icon_url=avatar,
@@ -158,11 +146,10 @@ async def on_message(message):
                     emb.set_image(url=img_content)
 
                 emb.set_footer(text='Sent in #{}'.format(msg.channel))
-                await client.send_message(
-                    discord.Object(id=ARCHIVE_CHANNEL), embed=emb)
+                channel = client.get_channel(ARCHIVE_CHANNEL)
+                await channel.send(embed=emb)
                 await asyncio.sleep(10)
-                await client.delete_message(message)
-                # Deletes the initial command message.
+                await message.delete()
 
             # If this exception is thrown, it usually means we had an
             # invalid message ID.
@@ -170,8 +157,7 @@ async def on_message(message):
                 emb = discord.Embed(
                     description='Error: Message not found in #{}, try again.'.format(message.channel),
                     color=0x7289da)
-                await client.send_message(message.channel, embed=emb)
-                print(e)
+                await message.channel.send(embed=emb)
 
         if message.content.startswith('+help'):
             help_message = '''
@@ -205,7 +191,7 @@ async def on_message(message):
         Purpose: To delete the last message in #pin-archive.
       '''.format(REACTION_COUNT)
             emb = discord.Embed(description=help_message, color=0x7289da)
-            await client.send_message(message.channel, embed=emb)
+            await message.channel.send(embed=emb)
 
 
 def try_config(config, heading, key):
@@ -234,6 +220,7 @@ if __name__ == "__main__":
     # It uses a positional argument for the token and a flag -c/--config to
     # specify the path to the config file.
     parser = argparse.ArgumentParser()
+    #parser.add_argument("token")
     parser.add_argument(
         "-c", "--config", help="Config file path", default="config.ini")
     args = parser.parse_args()
@@ -243,12 +230,12 @@ if __name__ == "__main__":
     config = configparser.ConfigParser()
     config.read(args.config)
     try:
-        ARCHIVE_CHANNEL = try_config(config, "IDs", "ArchiveChannel")
+        ARCHIVE_CHANNEL = int(try_config(config, "IDs", "ArchiveChannel"))
         SERVER = try_config(config, "IDs", "Server")
         SUPER_ROLES = literal_eval(try_config(config, "Perms", "SuperRoles"))
         SUPER_USERS = literal_eval(try_config(config, "Perms", "SuperUsers"))
         REACTION_EMOJI = try_config(config, "Reacts", "Emoji")
-        REACTION_COUNT = literal_eval(try_config(config, "Reacts", "Count"))
+        REACTION_COUNT = int(literal_eval(try_config(config, "Reacts", "Count")))
         TOKEN = try_config(config, "IDs", "Token")
     except KeyError:
         sys.exit(1)
