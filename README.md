@@ -16,8 +16,11 @@ Pin Archiver has the following features:
 
 ## Usage
 `+lastpin`: Displays the last pinned message of the current channel. 
+
 `+archive`: Archives a message to #pin-archive regardless of whether the message is pinned. 
+
 `+status`: Notifies the user if the bot is online
+
 `+del`: Deletes the last message in #pin-archive.
 
 * Note: +Archive and +Del can only be used by the roles or super-users specified in config.ini. 
