@@ -23,7 +23,7 @@ Pin Archiver has the following features:
 
 `+del`: Deletes the last message in #pin-archive.
 
-* Note: +Archive and +Del can only be used by the roles or super-users specified in config.ini. 
+* Note: +Archive and +Del can only be used by the super users or roles in the config.ini 
 
 ## To-do
 I have lots of plans for the future regarding this bot! Here are some of the features I plan on implementing:
