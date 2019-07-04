@@ -10,7 +10,7 @@ config = None
 SERVER = None
 SUPER_ROLES = None
 SUPER_USERS = None
-REACTION_EMOJI = None
+#REACTION_EMOJI = None
 REACTION_COUNT = None
 TOKEN = None
 
@@ -142,9 +142,9 @@ async def on_message_edit(before, after):
 @client.event
 async def on_reaction_add(reaction, user):
     """Scans for reactions on messages."""
-    if reaction.emoji == REACTION_EMOJI:
-        if reaction.count == REACTION_COUNT:
-            await pin(reaction.message)
+    if reaction.emoji == '📌':
+        if reaction.count == 7:
+            await reaction.message.pin()
 
 def check_super_perms(message):
     """Check that the message came from a user with "super" permissions.
@@ -287,7 +287,7 @@ if __name__ == "__main__":
         SERVER = try_config(config, "IDs", "Server")
         SUPER_ROLES = literal_eval(try_config(config, "Perms", "SuperRoles"))
         SUPER_USERS = literal_eval(try_config(config, "Perms", "SuperUsers"))
-        REACTION_EMOJI = try_config(config, "Reacts", "Emoji")
+        #REACTION_EMOJI = str(try_config(config, "Reacts", "Emoji"))
         REACTION_COUNT = int(literal_eval(try_config(config, "Reacts", "Count")))
         TOKEN = try_config(config, "IDs", "Token")
     except KeyError:
