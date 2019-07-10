@@ -23,6 +23,8 @@ Pin Archiver has the following features:
 
 `+del`: Deletes the last message in #pin-archive.
 
+`+help`: Displays all of the bots commands, including the permissions required to execute.
+
 * Note: +Archive and +Del can only be used by the super users or roles in the config.ini 
 
 ## To-do
@@ -32,12 +34,13 @@ I have lots of plans for the future regarding this bot! Here are some of the fea
 
 ## Operation
 Requirements:
+
    discord.py
    Python 3.6x 
 
 If you plan on hosting the bot yourself, clone the repository via `git clone -b master https://github.com/HaiderZaidiDev/Discord-Pin-Archiver-Bot master` and run the main.py file. If you still want the bot to run after you close your SSH session I suggest setting up a screen to keep the file running in a background session. 
 
-I have tested and use this on Ubuntu 16.04 LTS, however, I recommend using something like 18.04 LTS so you don't have to go through the troubles of getting Python 3.6 wokring on it. 
+I have tested and used this on Ubuntu 16.04 LTS, however, I recommend using something like 18.04 LTS so you don't have to go through the troubles of getting Python 3.6 working on it. 
 
 
    
