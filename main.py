@@ -10,73 +10,121 @@ config = None
 SERVER = None
 SUPER_ROLES = None
 SUPER_USERS = None
-#REACTION_EMOJI = None
-REACTION_COUNT = None
 TOKEN = None
 
 @client.event
 async def on_ready():
     """Print a startup message."""
-    print(str(client.user) + ' is online.')  
+    print(str(client.user) + ' is online.')
     await client.change_presence(activity=discord.Game(name='v2.0 | +help'))
 
+@client.event
 async def on_guild_join(guild):
     """Creates a pin-archive channel if one was not already found."""
     available_channels = [channels.name for channels in guild.channels]
-    if str('pins-archive') not in available_channels:
-        channel = await guild.create_text_channel('pins-archive', 
-            topic="An archive of all pinned messages")
-        await channel.set_permissions(guild.default_role, send_messages=False)
-        emb = discord.Embed(
-            description = '''Created channel named "pins-archive" as one was not found.''',
-            color=0x7289da)
-        await channel.send(embed=emb)
+    await asyncio.sleep(1)
+    role_names = [roles.name for roles in guild.roles]
+    bot_role = None
+    for i in range(len(role_names)):
+        if role_names[i] == 'Pin Archiver (Test Bot)':
+            bot_role = guild.roles[i] # Bot role object.
+    bot_id = 533383387763965982
+    bot = await guild.fetch_member(bot_id)
 
+    try:
+        if str('pin-archive') not in available_channels:
+            channel = await guild.create_text_channel('pin-archive',
+                topic="An archive of all pinned messages")
+            await channel.set_permissions(guild.default_role, send_messages=False)
+            await channel.set_permissions(bot, send_messages=True)
+            emb = discord.Embed(
+                description = '''Created channel named "pin-archive" as one was not found.''',
+                color=0x7289da)
+            await channel.send(embed=emb)
+
+    except discord.errors.Forbidden:
+        emb = discord.Embed(
+            description='''Error: Pin Archiver does not have permission to manage roles, channels or both. These are required for the bot to function. ''',
+            color=0x7289da
+        )
+        emb.set_footer(text='Need assistance? Join the support server: https://discord.gg/jY9xADW')
+
+        #await guild.channels[1].send(embed=emb)
+        for channel in guild.channels:
+            try:
+                await channel.send(embed=emb)
+                break
+            except:
+                pass
+
+async def error(message, error_message):
+    emb = discord.Embed(
+        description ='Error: {}'.format(error_message),
+        color=0x7289da
+        )
+    emb.set_footer(text='Need assistance? Join the support server: https://discord.gg/jY9xADW')
+    await message.channel.send(embed=emb)
+
+@client.event
 async def archive_channel_id(after):
     """Determines archive channel for a guild in which the message was sent in."""
     available_channel_names = [channels.name for channels in after.guild.channels]
     available_channel_ids = [channels.id for channels in after.guild.channels]
 
-    if str('pins-archive') not in available_channel_names:
-        emb = discord.Embed(
-            description="Error: Channel with name 'pins-archive' was not found, one has been created.",
-            colour=0x7289da )
-        await after.channel.send(embed=emb)
+    if str('pin-archive') not in available_channel_names:
         await on_guild_join(after.guild)
+        #return False
         # Calls function which creates archive channel if one hasn't been created.
-    
+    #else:
     for i in range (len(available_channel_names)):
-        if available_channel_names[i] == str('pins-archive'):
+        if available_channel_names[i] == str('pin-archive'):
             ARCHIVE_CHANNEL = available_channel_ids[i]
             return ARCHIVE_CHANNEL # Returns the channel id of the archive channel
 
+async def available_channels(message):
+    """Returns active channels available, required for channel detection"""
+    available_channels = [channels.name for channels in message.guild.channels]
+    return available_channels
+
+
 async def archive_message(message):
     """Forwards a message to the archive channel."""
-    name = message.author.display_name
-    avatar = message.author.avatar_url
-    pin_content = message.content
+    try:
+        name = message.author.display_name
+        avatar = message.author.avatar_url
+        pin_content = message.content
 
-    emb = discord.Embed(
-        description=pin_content,
-        color=0x7289da)  # Initalizes embed with description pin_content.
-    emb.set_author(
-        name=name,
-        icon_url=avatar,
-        url='https://discordapp.com/channels/{0}/{1}/{2}'.format(
-            SERVER, message.channel.id, message.id)
-        )  # Sets author and avatar url of the author of pinned message.
+        emb = discord.Embed(
+            description=pin_content,
+            color=0x7289da)  # Initalizes embed with description pin_content.
+        emb.set_author(
+            name=name,
+            icon_url=avatar,
+            url='https://discordapp.com/channels/{0}/{1}/{2}'.format(
+                SERVER, message.channel.id, message.id)
+            )  # Sets author and avatar url of the author of pinned message.
 
-        # Set attachemnt image url as embed image if it exists
-    if message.attachments:
-        img_url = message.attachments[0].url
-        emb.set_image(url=img_url)
+            # Set attachemnt image url as embed image if it exists
+        if message.attachments:
+            img_url = message.attachments[0].url
+            emb.set_image(url=img_url)
 
-    # Sets footer as the channel the message was sent and pinned in.
-    emb.set_footer(text='Sent in #{}'.format(message.channel))
+        # Sets footer as the channel the message was sent and pinned in.
+        emb.set_footer(text='Sent in #{}'.format(message.channel))
 
-    # Finally send the message to the pin archiving channel.
-    channel = client.get_channel(await archive_channel_id(message))
-    await channel.send(embed=emb)
+        #available_channels = [channels.name for channels in message.guild.channels]
+
+        if str('pin-archive') not in await available_channels(message):
+            await on_guild_join(message.guild)
+            #if str('pin-archive') not in available_channels:
+
+        #available_channels = [channels.name for channels in message.guild.channels]
+        if str('pin-archive') in await available_channels(message):
+            channel = client.get_channel(await archive_channel_id(message))
+            await channel.send(embed=emb)
+
+    except discord.errors.Forbidden:
+        await error(message, 'Pin Archiver does not have permission to send messages in #pin-archive.')
 
 async def confirm_message(after):
     """ Returns bool true if the channel the message was pinned in is not readable by all roles. """
@@ -84,12 +132,12 @@ async def confirm_message(after):
     roles = after.guild.roles # Returns all roles in the guild
     perm_roles = []
     perm_values = []
-        
+
     for i in range(len(roles)): # Filters roles which have specific channel permissions
         if roles[i] in channel_perms:
              perm_roles.append(roles[i])
 
-    for j in range(len(perm_roles)): 
+    for j in range(len(perm_roles)):
         role_perms = channel_perms[perm_roles[j]].pair() # Tuple containing the roles permission values
         allow, deny = role_perms
         perm_values.append(deny.value)
@@ -97,44 +145,64 @@ async def confirm_message(after):
     if 1024 in perm_values: # Permission value for READ_MESSAGES
         return True
 
+async def message_read_perms(message):
+    """Returns True if any of the reader's roles have the manage_messages permission."""
+    user_roles = message.author.roles
+    for i in range(len(user_roles)):
+        perm_value = discord.Permissions(user_roles[i].permissions.value)
+        if perm_value.manage_messages or perm_value.administrator or message.guild.owner:
+            return True
+
+async def invalid_perms(message):
+    """Embed template for handling errors"""
+    emb = discord.Embed(
+        description='Error: Sorry, you must have the manage_messages permission to execute this command.',
+        color=0x7289da
+    )
+    await message.channel.send(embed=emb)
+
 @client.event
 async def on_message_edit(before, after):
     """Main function for handling message edit events."""
-    channelPins = await before.channel.pins()
+    channelPins = await after.channel.pins()
     pinned_ids = [message.id for message in channelPins]
     attachments = after.attachments
 
-    if len(pinned_ids) == 50:
+    if before.content == after.content and after.author != client.user and len(pinned_ids) == 50:
         oldest_pin = await after.channel.fetch_message(pinned_ids[-1])
-        await oldest_pin.unpin()
+        try:
+            await oldest_pin.unpin()
+        except discord.errors.Forbidden:
+            await error(before, '''This channel has reached the maximum pin limit, Pin Archiver can't unpin the oldest message as it does not have the manage messages permission. This message has been archived but not pinned. ''')
 
     if after.pinned and after.author != client.user:
         private_channel_status = await confirm_message(after)
         if private_channel_status == True:
             warning_message = '''
-                        This message was sent in a private channel, archiving it will allow everyone to view it. Do you still want to archive it? 
+                        This message was sent in a private channel, archiving it will allow everyone to view it. Do you still want to archive it?
                      '''
             emb = discord.Embed(
                 description=warning_message,
                 color=0x7289da,
                 title='Confirm Action'
                 )
-            emb.set_footer(text='Note: You can disable this message by entering {command}.') #Command not yet created. 
+
+            #emb.set_footer(text='Note: You can disable this message by entering {command}.') #Command not yet created.
             confirm_action = await after.channel.send(embed=emb)
             confirmation_emojis = ['✅', '❌']
 
             for emoji in confirmation_emojis:
                 await confirm_action.add_reaction(emoji)
 
-            reaction, user = await client.wait_for('reaction_add', 
+            reaction, user = await client.wait_for('reaction_add',
                 check=lambda reaction, user: (user.id != client.user.id) and (reaction.emoji in confirmation_emojis)
-                ) # Checks the user reaction, ensuring the reaction is not from a bot. 
+                ) # Checks the user reaction, ensuring the reaction is not from a bot.
             if reaction.emoji == '✅':
                 await archive_message(after)
-                await asyncio.sleep(3)
+                await asyncio.sleep(2)
                 await confirm_action.delete()
             if reaction.emoji == '❌':
-                await asyncio.sleep(3)
+                await asyncio.sleep(2)
                 await confirm_action.delete()
         else:
             await archive_message(after)
@@ -146,13 +214,6 @@ async def on_reaction_add(reaction, user):
         if reaction.count == 7:
             await reaction.message.pin()
 
-def check_super_perms(message):
-    """Check that the message came from a user with "super" permissions.
-    See config file [Perms]."""
-    has_super_role = any(
-        True for role in message.author.roles if role.name in SUPER_ROLES)
-    return message.author.id in SUPER_USERS or has_super_role
-
 @client.event
 async def on_message(message):
     """Handle commands."""
@@ -161,8 +222,8 @@ async def on_message(message):
         if message.content == str('+lastpin'):
             channelPins = await message.channel.pins()
             lastPin = channelPins[0]
-            pinned_name = lastPin.author.display_name 
-            pinned_avatar = lastPin.author.avatar_url 
+            pinned_name = lastPin.author.display_name
+            pinned_avatar = lastPin.author.avatar_url
             pinned_content = lastPin.content
             attachments = lastPin.attachments
 
@@ -176,9 +237,9 @@ async def on_message(message):
                     SERVER, lastPin.channel.id, lastPin.id))
 
             # Handle attachments in pins
-            if attachments:
-                img_content = attachments[0]['url']
-                emb.set_image(url=img_content)
+            if message.attachments:
+                img_url = message.attachments[0].url
+                emb.set_image(url=img_url)
 
             await message.channel.send(embed=emb)
 
@@ -186,8 +247,9 @@ async def on_message(message):
             emb = discord.Embed(description='Online.', color=0x7289da)
             await message.channel.send(embed=emb)
 
-        if message.content.startswith('+del'):
-            if not check_super_perms(message):
+        if message.content.startswith('+unarchive'):
+            if not await message_read_perms(message):
+                await invalid_perms(message)
                 return
 
             # Fetch the last message in the channel #pin-archive and delete
@@ -196,17 +258,25 @@ async def on_message(message):
                 last_message = message
             await last_message.delete()
 
+
         if message.content.startswith('+archive'):
             # See above
-            if not check_super_perms(message):
+            if not await message_read_perms(message):
+                await invalid_perms(message)
                 return
             try:
                 # Extract the message ID
                 id_to_archive = message.content.replace('+archive ', '')
                 msg = await message.channel.fetch_message(id_to_archive)
-                await archive_message(msg)
-                await asyncio.sleep(10)
-                await message.delete()
+
+                if str('pin-archive') not in await available_channels(message):
+                    await on_guild_join(message.guild)
+                    await asyncio.sleep(1)
+
+                if str('pin-archive') in await available_channels(message):
+                    await archive_message(msg)
+                    await asyncio.sleep(10)
+                    await message.delete()
 
             # If this exception is thrown, it usually means we had an invalid message ID.
             except discord.errors.HTTPException as e:
@@ -217,35 +287,26 @@ async def on_message(message):
 
         if message.content.startswith('+help'):
             help_message = '''
-       __**Information**__:
-
-        This bot was made by @Nitr0us#5090, if you have any questions or require support please contact him.
-
-       __**Features**__:
+       __**Commands**__:
 
         **1)** Last Pinned Message:
         Usage: +lastpin
         Purpose: Displays the last pinned message of the current channel.
 
-        **2)** Archive Pinned Messages (Automatic):
-        Usage: Automatic
-        Usage Alternate: Culminate {0} pin reactions on a message.
-        Purpose: To archive all pinned messages to #pin-archive.
-
-        **3)** Archive Messages (Manual)
+        **2)** Archive Messages (Manual)
         Usage: +archive <messageid>
-        Permission: Administrators & Moderators
+        Permission: Must have a role with the manage_messages permission.
         Purpose: To archive a message to #pin-archive, regardless whether the message is pinned.
 
-        **4)** Status:
+        **3)** Status:
         Usage: +status
         Purpose: Notifies the user if the bot is online.
-        
-        **5)** Delete:
-        Usage: +del
-        Permission: Administrators & Moderators
+
+        **4)** Unarchive Messages:
+        Usage: +unarchive
+        Permission: Must have a role with the manage_messages permission.
         Purpose: To delete the last message in #pin-archive.
-      '''.format(REACTION_COUNT)
+      '''.format(7)
             emb = discord.Embed(description=help_message, color=0x7289da)
             await message.channel.send(embed=emb)
 
@@ -284,11 +345,6 @@ if __name__ == "__main__":
     config = configparser.ConfigParser()
     config.read(args.config)
     try:
-        SERVER = try_config(config, "IDs", "Server")
-        SUPER_ROLES = literal_eval(try_config(config, "Perms", "SuperRoles"))
-        SUPER_USERS = literal_eval(try_config(config, "Perms", "SuperUsers"))
-        #REACTION_EMOJI = str(try_config(config, "Reacts", "Emoji"))
-        REACTION_COUNT = int(literal_eval(try_config(config, "Reacts", "Count")))
         TOKEN = try_config(config, "IDs", "Token")
     except KeyError:
         sys.exit(1)
