@@ -2,7 +2,7 @@
 # Discord Pin Archiver Bot
 Pin Archiver is a Discord bot that was specifically made for the [Discord server](https://discord.gg/ZZFJhdr) of the alumni ran [Subreddit](https://www.reddit.com/r/uwaterloo/) for the University of Waterloo; however, since then, the bot has been made open source for the public to use. 
 
-If you require assistance in any means regardng the bot, feel free to join the [Pin Archiver Support Server](https://discord.gg/jY9xADW).
+If you require assistance in any means regardng the bot, feel free to join the [Pin Archiver Support Server](https://discord.gg/jY9xADW), or, [click here to invite](https://discordapp.com/oauth2/authorize?client_id=533383387763965982&permissions=268823632&scope=bot) the bot to your server (hosted by me).
 
 Pin Archiver has the following features:
 - Archives pinned messages to an archive channel, this message is an embed which:
@@ -15,7 +15,6 @@ Pin Archiver has the following features:
 - When pinning a message in an private channel, the user will be given the option to pin the message but not archive it.
 - Fetch the last pinned message in the current channel (+lastpin).
 - Archive any message, regardless of whether it was pinned, via the message id (e.g +archive 615697286105923639).
-- Delete the last archived message in the archived channel (+unarchive).
 - Fetch a list of the bot's commands mentioned above, along with required permissions and examples (+help). 
 
 ## Usage
@@ -25,14 +24,9 @@ Pin Archiver has the following features:
 
 `+status`: Notifies the user if the bot is online
 
-`+unarchive`: Deletes the last message in #pin-archive.
-
 `+help`: Displays all of the bots commands, including the permissions required to execute.
 
-Note: +archive and +unarchive requires the user to have the manage messages permission. Guild owners or users with administrator permissions will have access to this as well.
-
-
-
+Note: +archive requires the user to have the manage messages permission. Guild owners or users with administrator permissions will have access to this as well.
 
 ## To-do
 I have lots of plans for the future regarding this bot! Here are some of the features I plan on implementing:
