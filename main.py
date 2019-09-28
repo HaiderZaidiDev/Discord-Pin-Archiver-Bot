@@ -7,9 +7,6 @@ from ast import literal_eval
 
 client = discord.Client()
 config = None
-SERVER = None
-SUPER_ROLES = None
-SUPER_USERS = None
 TOKEN = None
 
 @client.event
@@ -49,7 +46,7 @@ async def on_guild_join(guild):
         )
         emb.set_footer(text='Need assistance? Join the support server: https://discord.gg/jY9xADW')
 
-        #await guild.channels[1].send(embed=emb)
+        #Attempts to send message in every channel until one permits it.
         for channel in guild.channels:
             try:
                 await channel.send(embed=emb)
@@ -73,19 +70,15 @@ async def archive_channel_id(after):
 
     if str('pin-archive') not in available_channel_names:
         await on_guild_join(after.guild)
-        #return False
-        # Calls function which creates archive channel if one hasn't been created.
-    #else:
+
     for i in range (len(available_channel_names)):
         if available_channel_names[i] == str('pin-archive'):
             ARCHIVE_CHANNEL = available_channel_ids[i]
             return ARCHIVE_CHANNEL # Returns the channel id of the archive channel
 
 async def available_channels(message):
-    """Returns active channels available, required for channel detection"""
     available_channels = [channels.name for channels in message.guild.channels]
     return available_channels
-
 
 async def archive_message(message):
     """Forwards a message to the archive channel."""
@@ -93,6 +86,7 @@ async def archive_message(message):
         name = message.author.display_name
         avatar = message.author.avatar_url
         pin_content = message.content
+        server = message.guild.id
 
         emb = discord.Embed(
             description=pin_content,
@@ -101,7 +95,7 @@ async def archive_message(message):
             name=name,
             icon_url=avatar,
             url='https://discordapp.com/channels/{0}/{1}/{2}'.format(
-                SERVER, message.channel.id, message.id)
+                server, message.channel.id, message.id)
             )  # Sets author and avatar url of the author of pinned message.
 
             # Set attachemnt image url as embed image if it exists
@@ -112,13 +106,10 @@ async def archive_message(message):
         # Sets footer as the channel the message was sent and pinned in.
         emb.set_footer(text='Sent in #{}'.format(message.channel))
 
-        #available_channels = [channels.name for channels in message.guild.channels]
-
         if str('pin-archive') not in await available_channels(message):
             await on_guild_join(message.guild)
             #if str('pin-archive') not in available_channels:
 
-        #available_channels = [channels.name for channels in message.guild.channels]
         if str('pin-archive') in await available_channels(message):
             channel = client.get_channel(await archive_channel_id(message))
             await channel.send(embed=emb)
@@ -154,7 +145,6 @@ async def message_read_perms(message):
             return True
 
 async def invalid_perms(message):
-    """Embed template for handling errors"""
     emb = discord.Embed(
         description='Error: Sorry, you must have the manage_messages permission to execute this command.',
         color=0x7289da
@@ -164,7 +154,7 @@ async def invalid_perms(message):
 @client.event
 async def on_message_edit(before, after):
     """Main function for handling message edit events."""
-    channelPins = await after.channel.pins()
+    channelPins = await before.channel.pins()
     pinned_ids = [message.id for message in channelPins]
     attachments = after.attachments
 
@@ -221,11 +211,15 @@ async def on_message(message):
     if message.author != client.user:
         if message.content == str('+lastpin'):
             channelPins = await message.channel.pins()
+            if not channelPins:
+                await error(message, 'There are no pinned messages in #{}'.format(message.channel))
+                return
             lastPin = channelPins[0]
             pinned_name = lastPin.author.display_name
             pinned_avatar = lastPin.author.avatar_url
             pinned_content = lastPin.content
             attachments = lastPin.attachments
+            server = message.guild.id
 
             # Description is the contents of the first pinned message
             emb = discord.Embed(description=pinned_content, color=0x7289da)
@@ -234,7 +228,7 @@ async def on_message(message):
                 name=pinned_name,
                 icon_url=pinned_avatar,
                 url='https://discordapp.com/channels/{0}/{1}/{2}'.format(
-                    SERVER, lastPin.channel.id, lastPin.id))
+                    server, lastPin.channel.id, lastPin.id))
 
             # Handle attachments in pins
             if message.attachments:
@@ -247,17 +241,16 @@ async def on_message(message):
             emb = discord.Embed(description='Online.', color=0x7289da)
             await message.channel.send(embed=emb)
 
-        if message.content.startswith('+unarchive'):
-            if not await message_read_perms(message):
-                await invalid_perms(message)
-                return
-
-            # Fetch the last message in the channel #pin-archive and delete
-            channel = client.get_channel(await archive_channel_id(message))
-            async for message in channel.history(limit=1):
-                last_message = message
-            await last_message.delete()
-
+        if message.content == '+stats' and message.author.id == 357652932377837589:
+            num_servers = len(client.guilds)
+            server_names = []
+            total_members = 0
+            for server in client.guilds:
+                if server.id != 264445053596991498:
+                    server_names.append(server.name)
+                    total_members += len(server.members)
+            print('Pin Archiver is currently in {0} servers with {1} users.'.format(str(num_servers), str(total_members)))
+            print('Servers: {}'.format(server_names))
 
         if message.content.startswith('+archive'):
             # See above
@@ -285,30 +278,30 @@ async def on_message(message):
                     color=0x7289da)
                 await message.channel.send(embed=emb)
 
-        if message.content.startswith('+help'):
-            help_message = '''
-       __**Commands**__:
+        if message.content == '+help':
+            try:
+                help_message = '''
+           __**Commands**__:
 
-        **1)** Last Pinned Message:
-        Usage: +lastpin
-        Purpose: Displays the last pinned message of the current channel.
+            **1)** Last Pinned Message:
+            Usage: +lastpin
+            Purpose: Displays the last pinned message of the current channel.
 
-        **2)** Archive Messages (Manual)
-        Usage: +archive <messageid>
-        Permission: Must have a role with the manage_messages permission.
-        Purpose: To archive a message to #pin-archive, regardless whether the message is pinned.
+            **2)** Archive Messages (Manual)
+            Usage: +archive <messageid>
+            Permission: Must have a role with the manage_messages permission.
+            Purpose: To archive a message to #pin-archive, regardless whether the message is pinned.
 
-        **3)** Status:
-        Usage: +status
-        Purpose: Notifies the user if the bot is online.
+            **3)** Status:
+            Usage: +status
+            Purpose: Notifies the user if the bot is online.
 
-        **4)** Unarchive Messages:
-        Usage: +unarchive
-        Permission: Must have a role with the manage_messages permission.
-        Purpose: To delete the last message in #pin-archive.
-      '''.format(7)
-            emb = discord.Embed(description=help_message, color=0x7289da)
-            await message.channel.send(embed=emb)
+          '''.format(7)
+                emb = discord.Embed(description=help_message, color=0x7289da)
+                await message.channel.send(embed=emb)
+
+            except:
+                await error(message, 'Pin Archiver does not have permission to send messages in {}'.format(message.channel))
 
 
 def try_config(config, heading, key):
