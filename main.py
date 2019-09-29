@@ -3,9 +3,13 @@ import configparser
 import discord
 import sys
 import asyncio
+import sqlite3
 from ast import literal_eval
 
 client = discord.Client()
+file_path = '' # Filepath for db
+db=sqlite3.connect('{}/pinarchiver_config.db'.format(file_path))
+cursor = db.cursor()
 config = None
 TOKEN = None
 
@@ -23,9 +27,9 @@ async def on_guild_join(guild):
     role_names = [roles.name for roles in guild.roles]
     bot_role = None
     for i in range(len(role_names)):
-        if role_names[i] == 'Pin Archiver (Test Bot)':
+        if role_names[i] == 'Pin Archiver':
             bot_role = guild.roles[i] # Bot role object.
-    bot_id = 533383387763965982
+    bot_id = # Insert bot ID as int here.
     bot = await guild.fetch_member(bot_id)
 
     try:
@@ -139,10 +143,17 @@ async def confirm_message(after):
 async def message_read_perms(message):
     """Returns True if any of the reader's roles have the manage_messages permission."""
     user_roles = message.author.roles
+    role_perms = []
+    print(user_roles)
     for i in range(len(user_roles)):
-        perm_value = discord.Permissions(user_roles[i].permissions.value)
-        if perm_value.manage_messages or perm_value.administrator or message.guild.owner:
-            return True
+        perm_value = discord.Permissions(permissions=user_roles[i].permissions.value)
+
+        if perm_value.manage_messages or perm_value.administrator or message.author.id == message.guild.owner_id:
+            role_perms.append('True')
+    if 'True' in role_perms:
+        return True
+
+
 
 async def invalid_perms(message):
     emb = discord.Embed(
@@ -201,7 +212,8 @@ async def on_message_edit(before, after):
 async def on_reaction_add(reaction, user):
     """Scans for reactions on messages."""
     if reaction.emoji == '📌':
-        if reaction.count == 7:
+        guild_react_count = cursor.execute("select react_count from config_settings where guild_id = ?", (reaction.message.guild.id,)).fetchone()[0]
+        if reaction.count == guild_react_count:
             await reaction.message.pin()
 
 @client.event
@@ -209,6 +221,24 @@ async def on_message(message):
     """Handle commands."""
     # If the message is not from a bot, the following code is executed.
     if message.author != client.user:
+        if message.content.startswith('+setreactcount'):
+            if not await message_read_perms(message):
+                await invalid_perms(message)
+                return
+            try:
+                react_count_config = int(message.content[14:len(message.content)]) #Isolates int from message
+
+            except ValueError:
+                await error(message, 'The react count must be an integer greater than 0.')
+                return
+
+            if react_count_config < 1:
+                await error(message, 'The react count must be an integer greater than 0.')
+
+            else:
+                cursor.execute('''INSERT OR REPLACE INTO config_settings(guild_id, react_count) VALUES(?,?)''', (message.guild.id, react_count_config))
+                db.commit()
+
         if message.content == str('+lastpin'):
             channelPins = await message.channel.pins()
             if not channelPins:
@@ -296,6 +326,10 @@ async def on_message(message):
             Usage: +status
             Purpose: Notifies the user if the bot is online.
 
+            **4** React Count:
+            Usage: +setreactcount <integer>
+            Permission: Must be an administrator/guild owner or have the manage_messages permission.
+            Purpose: Set the count for which '📌' reacts will pin a message, default value is {}
           '''.format(7)
                 emb = discord.Embed(description=help_message, color=0x7289da)
                 await message.channel.send(embed=emb)
@@ -343,3 +377,5 @@ if __name__ == "__main__":
         sys.exit(1)
 
     client.run(TOKEN)
+cursor.close()
+db.close()
