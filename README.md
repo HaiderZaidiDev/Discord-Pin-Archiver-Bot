@@ -39,7 +39,9 @@ I have lots of plans for the future regarding this bot! Here are some of the fea
 Requirements:
 
    Python 3.6x 
+   
    discord.py
+   
    SQL Database, I used SQLite3, this is only if you want to use +setreactcount. 
 
 If you plan on hosting the bot yourself, clone the repository via `git clone -b master https://github.com/HaiderZaidiDev/Discord-Pin-Archiver-Bot master` and run the main.py file. If you still want the bot to run after you close your SSH session I suggest setting up a screen to keep the file running in a background session. 
