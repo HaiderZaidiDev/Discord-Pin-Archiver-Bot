@@ -11,7 +11,7 @@ Pin Archiver has the following features:
   - A hyper-link to jump to the chat location of the message.
 - Allows channels to exceed the maximum pin limit (50), by deleting the oldest pinned message once the maximum has been reached.
 - Creates an archive channel named 'pin-archive' upon joining the server if one hasn't been found upon pinning a message or when the bot joins the server.
-- Pins (and archives) a message if it receives 7 '📌' reactions.
+- Pins (and archives) a message if it receives 7 (by default) '📌' reactions.
 - When pinning a message in an private channel, the user will be given the option to pin the message but not archive it.
 - Fetch the last pinned message in the current channel (+lastpin).
 - Archive any message, regardless of whether it was pinned, via the message id (e.g +archive 615697286105923639).
@@ -22,11 +22,13 @@ Pin Archiver has the following features:
 
 `+archive`: Archives a message to #pin-archive regardless of whether the message is pinned. 
 
+`+setreactcount`: Changes the number of '📌' reactions required to pin a message.
+
 `+status`: Notifies the user if the bot is online
 
 `+help`: Displays all of the bots commands, including the permissions required to execute.
 
-Note: +archive requires the user to have the manage messages permission. Guild owners or users with administrator permissions will have access to this as well.
+Note: +archive and +setreactcount requires the user to have the manage messages permission. Guild owners or users with administrator permissions will have access to this as well.
 
 ## To-do
 I have lots of plans for the future regarding this bot! Here are some of the features I plan on implementing:
@@ -36,8 +38,9 @@ I have lots of plans for the future regarding this bot! Here are some of the fea
 ## Operation
 Requirements:
 
-   discord.py
    Python 3.6x 
+   discord.py
+   SQL Database, I used SQLite3, this is only if you want to use +setreactcount. 
 
 If you plan on hosting the bot yourself, clone the repository via `git clone -b master https://github.com/HaiderZaidiDev/Discord-Pin-Archiver-Bot master` and run the main.py file. If you still want the bot to run after you close your SSH session I suggest setting up a screen to keep the file running in a background session. 
 
