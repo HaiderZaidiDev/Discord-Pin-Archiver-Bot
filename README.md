@@ -1,6 +1,8 @@
 ![pinArchiver Banner](https://i.imgur.com/OhpJKc1.jpg)
 # Discord Pin Archiver Bot
 [![Discord Bots](https://discordbots.org/api/widget/533383387763965982.svg)](https://discordbots.org/bot/533383387763965982)
+
+
 Pin Archiver is a Discord bot that was specifically made for the [Discord server](https://discord.gg/ZZFJhdr) of the alumni ran [Subreddit](https://www.reddit.com/r/uwaterloo/) for the University of Waterloo; however, since then, the bot has been made open source for the public to use. 
 
 If you require assistance in any means regardng the bot, feel free to join the [Pin Archiver Support Server](https://discord.gg/jY9xADW), or, [click here to invite](https://discordapp.com/oauth2/authorize?client_id=533383387763965982&permissions=268823632&scope=bot) the bot to your server (hosted by me).
