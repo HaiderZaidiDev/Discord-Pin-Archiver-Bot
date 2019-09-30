@@ -7,7 +7,7 @@ import sqlite3
 from ast import literal_eval
 
 client = discord.Client()
-file_path = '' # Filepath for db
+file_path = '/home/pinarchiver/pinArchiver/db'
 db=sqlite3.connect('{}/pinarchiver_config.db'.format(file_path))
 cursor = db.cursor()
 config = None
@@ -29,7 +29,7 @@ async def on_guild_join(guild):
     for i in range(len(role_names)):
         if role_names[i] == 'Pin Archiver':
             bot_role = guild.roles[i] # Bot role object.
-    bot_id = # Insert bot ID as int here.
+    bot_id = 533383387763965982
     bot = await guild.fetch_member(bot_id)
 
     try:
@@ -144,7 +144,6 @@ async def message_read_perms(message):
     """Returns True if any of the reader's roles have the manage_messages permission."""
     user_roles = message.author.roles
     role_perms = []
-    print(user_roles)
     for i in range(len(user_roles)):
         perm_value = discord.Permissions(permissions=user_roles[i].permissions.value)
 
@@ -232,12 +231,19 @@ async def on_message(message):
                 await error(message, 'The react count must be an integer greater than 0.')
                 return
 
-            if react_count_config < 1:
-                await error(message, 'The react count must be an integer greater than 0.')
+            if react_count_config < 1 or react_count_config > 1000:
+                await error(message, 'The react count must be an integer greater than 0 and less than 1000.')
 
             else:
                 cursor.execute('''INSERT OR REPLACE INTO config_settings(guild_id, react_count) VALUES(?,?)''', (message.guild.id, react_count_config))
                 db.commit()
+
+                emb = discord.Embed(
+                    description='React count has been set to {}'.format(str(react_count_config)),
+                    color=0x7289da,
+                    title='Confirmation'
+                )
+                await message.channel.send(embed=emb)
 
         if message.content == str('+lastpin'):
             channelPins = await message.channel.pins()
@@ -279,8 +285,12 @@ async def on_message(message):
                 if server.id != 264445053596991498:
                     server_names.append(server.name)
                     total_members += len(server.members)
-            print('Pin Archiver is currently in {0} servers with {1} users.'.format(str(num_servers), str(total_members)))
-            print('Servers: {}'.format(server_names))
+            emb = discord.Embed(
+            description='**Servers:** {0} \n **Users:** {1}'.format(str(num_servers), str(total_members)),
+            color=0x7289da,
+            title='Statistics'
+            )
+            await message.channel.send(embed=emb)
 
         if message.content.startswith('+archive'):
             # See above
