@@ -7,6 +7,8 @@ import sqlite3
 from ast import literal_eval
 import requests
 import logging
+import datetime
+import time
 
 
 client = discord.Client()
@@ -119,10 +121,12 @@ async def archive_message(message):
         avatar = message.author.avatar_url
         pin_content = message.content
         server = message.guild.id
+        current_date = datetime.datetime.utcfromtimestamp(int(time.time()))
 
         emb = discord.Embed(
             description=pin_content,
-            color=0x7289da)  # Initalizes embed with description pin_content.
+            color=0x7289da,
+            timestamp=current_date)  # Initalizes embed with description pin_content.
         emb.set_author(
             name=name,
             icon_url=avatar,
@@ -319,7 +323,7 @@ async def on_message(message):
             server_names = []
             total_members = 0
             for server in client.guilds:
-                if server.id != 264445053596991498: # Excludes Discord Bot List server to not inflate the user count. 
+                if server.id != 264445053596991498: # Excludes Discord Bot List server to not inflate the user count.
                     server_names.append(server.name)
                     total_members += len(server.members)
             emb = discord.Embed(
