@@ -5,33 +5,72 @@ import sys
 import asyncio
 import sqlite3
 from ast import literal_eval
+import requests
+import logging
+
 
 client = discord.Client()
-file_path = '/home/pinarchiver/pinArchiver/db'
+file_path = ''
 db=sqlite3.connect('{}/pinarchiver_config.db'.format(file_path))
 cursor = db.cursor()
 config = None
 TOKEN = None
+DBLTOKEN = None
+
+async def guild_count_update():
+    """Updates server count on Discord Bot List/TOP.GG every 30 minutes"""
+    try:
+        API_ENDPOINT = "https://top.gg/api/bots/{}/stats".format(client.user.id)
+        data = {'server_count': len(client.guilds)}
+        headers = {"Authorization": DBLTOKEN}
+        requests.post(url = API_ENDPOINT, data = data, headers=headers)
+        logging.info('Successfully posted guild count to DBL, {} servers.'.format(len(client.guilds)))
+    except Exception as e:
+        logging.exception('Failed to post guild count to DBL - Error: {}'.format(e))
+    await asyncio.sleep(1800)
+    await guild_count_update()
+
+async def error(message, error_message):
+    emb = discord.Embed(
+        description ='Error: {}'.format(error_message),
+        color=0x7289da
+        )
+    emb.set_footer(text='Need assistance? Join the support server: https://discord.gg/jY9xADW')
+    await message.channel.send(embed=emb)
+
+async def insufficient_perms(message, error):
+    emb = discord.Embed(
+    description="Error: {}".format(error),
+    color=0x7289da
+    )
+    emb.set_footer(text='Need assistance? Join the support server: https://discord.gg/jY9xADW')
+    #Attempts to send message in every channel until one permits it.
+    for channel in message.guild.channels:
+        try:
+            await channel.send(embed=emb)
+            break
+        except:
+            pass
+
+async def invalid_perms(message):
+    emb = discord.Embed(
+        description='Error: Sorry, you must have the manage_messages permission to execute this command.',
+        color=0x7289da
+    )
+    await message.channel.send(embed=emb)
 
 @client.event
 async def on_ready():
     """Print a startup message."""
     print(str(client.user) + ' is online.')
     await client.change_presence(activity=discord.Game(name='v2.0 | +help'))
+    await guild_count_update()
 
 @client.event
 async def on_guild_join(guild):
     """Creates a pin-archive channel if one was not already found."""
     available_channels = [channels.name for channels in guild.channels]
-    await asyncio.sleep(1)
-    role_names = [roles.name for roles in guild.roles]
-    bot_role = None
-    for i in range(len(role_names)):
-        if role_names[i] == 'Pin Archiver':
-            bot_role = guild.roles[i] # Bot role object.
-    bot_id = 533383387763965982
-    bot = await guild.fetch_member(bot_id)
-
+    bot = await guild.fetch_member(client.user.id)
     try:
         if str('pin-archive') not in available_channels:
             channel = await guild.create_text_channel('pin-archive',
@@ -42,14 +81,12 @@ async def on_guild_join(guild):
                 description = '''Created channel named "pin-archive" as one was not found.''',
                 color=0x7289da)
             await channel.send(embed=emb)
-
     except discord.errors.Forbidden:
         emb = discord.Embed(
-            description='''Error: Pin Archiver does not have permission to manage roles, channels or both. These are required for the bot to function. ''',
+            description="Error: Pin Archiver does not have permission to manage roles, channels or both. These are required for the bot to function.",
             color=0x7289da
         )
         emb.set_footer(text='Need assistance? Join the support server: https://discord.gg/jY9xADW')
-
         #Attempts to send message in every channel until one permits it.
         for channel in guild.channels:
             try:
@@ -58,15 +95,6 @@ async def on_guild_join(guild):
             except:
                 pass
 
-async def error(message, error_message):
-    emb = discord.Embed(
-        description ='Error: {}'.format(error_message),
-        color=0x7289da
-        )
-    emb.set_footer(text='Need assistance? Join the support server: https://discord.gg/jY9xADW')
-    await message.channel.send(embed=emb)
-
-@client.event
 async def archive_channel_id(after):
     """Determines archive channel for a guild in which the message was sent in."""
     available_channel_names = [channels.name for channels in after.guild.channels]
@@ -112,7 +140,6 @@ async def archive_message(message):
 
         if str('pin-archive') not in await available_channels(message):
             await on_guild_join(message.guild)
-            #if str('pin-archive') not in available_channels:
 
         if str('pin-archive') in await available_channels(message):
             channel = client.get_channel(await archive_channel_id(message))
@@ -152,28 +179,20 @@ async def message_read_perms(message):
     if 'True' in role_perms:
         return True
 
-
-
-async def invalid_perms(message):
-    emb = discord.Embed(
-        description='Error: Sorry, you must have the manage_messages permission to execute this command.',
-        color=0x7289da
-    )
-    await message.channel.send(embed=emb)
-
 @client.event
 async def on_message_edit(before, after):
     """Main function for handling message edit events."""
     channelPins = await before.channel.pins()
     pinned_ids = [message.id for message in channelPins]
-    attachments = after.attachments
-
     if before.content == after.content and after.author != client.user and len(pinned_ids) == 50:
         oldest_pin = await after.channel.fetch_message(pinned_ids[-1])
         try:
             await oldest_pin.unpin()
         except discord.errors.Forbidden:
-            await error(before, '''This channel has reached the maximum pin limit, Pin Archiver can't unpin the oldest message as it does not have the manage messages permission. This message has been archived but not pinned. ''')
+            try:
+                await error(before, '''This channel has reached the maximum pin limit, Pin Archiver can't unpin the oldest message as it does not have the manage messages permission. This message has been archived but not pinned. ''')
+            except discord.errors.Forbidden:
+                await insufficient_perms(after, 'Pin Archiver does not have permission to manage roles, channels or both. These are required for the bot to function.')
 
     if after.pinned and after.author != client.user:
         private_channel_status = await confirm_message(after)
@@ -211,9 +230,21 @@ async def on_message_edit(before, after):
 async def on_reaction_add(reaction, user):
     """Scans for reactions on messages."""
     if reaction.emoji == '📌':
-        guild_react_count = cursor.execute("select react_count from config_settings where guild_id = ?", (reaction.message.guild.id,)).fetchone()[0]
+        try:
+            guild_react_count = cursor.execute("select react_count from config_settings where guild_id = ?", (reaction.message.guild.id,)).fetchone()[0]
+        except TypeError: # Usually if the server has not set a react count (None Type)
+            guild_react_count = 7
         if reaction.count == guild_react_count:
-            await reaction.message.pin()
+            try:
+                await reaction.message.pin()
+            except discord.errors.HTTPException:
+                try:
+                    channelPins = await reaction.message.channel.pins()
+                    pinned_ids = [message.id for message in channelPins]
+                    oldest_pin = await reaction.message.channel.fetch_message(pinned_ids[-1])
+                    await oldest_pin.unpin()
+                except discord.errors.Forbidden:
+                    await insufficient_perms(reaction.message, 'Pin Archiver does not have permission to manage roles, channels or both. These are required for the bot to function.')
 
 @client.event
 async def on_message(message):
@@ -243,7 +274,10 @@ async def on_message(message):
                     color=0x7289da,
                     title='Confirmation'
                 )
-                await message.channel.send(embed=emb)
+                try:
+                    await message.channel.send(embed=emb)
+                except discord.errors.Forbidden:
+                    await insufficient_perms(message, 'Pin Archiver does not have permission to send messages in #{}'.format(message.channel))
 
         if message.content == str('+lastpin'):
             channelPins = await message.channel.pins()
@@ -275,14 +309,17 @@ async def on_message(message):
 
         if message.content == '+status':
             emb = discord.Embed(description='Online.', color=0x7289da)
-            await message.channel.send(embed=emb)
+            try:
+                await message.channel.send(embed=emb)
+            except discord.errors.Forbidden:
+                await insufficient_perms(message, 'Pin Archiver does not have permission to send messages in #{}'.format(message.channel))
 
-        if message.content == '+stats' and message.author.id == 357652932377837589:
+        if message.content == '+stats':
             num_servers = len(client.guilds)
             server_names = []
             total_members = 0
             for server in client.guilds:
-                if server.id != 264445053596991498:
+                if server.id != 264445053596991498: # Excludes Discord Bot List server to not inflate the user count. 
                     server_names.append(server.name)
                     total_members += len(server.members)
             emb = discord.Embed(
@@ -290,7 +327,10 @@ async def on_message(message):
             color=0x7289da,
             title='Statistics'
             )
-            await message.channel.send(embed=emb)
+            try:
+                await message.channel.send(embed=emb)
+            except discord.errors.Forbidden:
+                await insufficient_perms(message, 'Pin Archiver does not have permission to send messages in #{}'.format(message.channel))
 
         if message.content.startswith('+archive'):
             # See above
@@ -319,8 +359,7 @@ async def on_message(message):
                 await message.channel.send(embed=emb)
 
         if message.content == '+help':
-            try:
-                help_message = '''
+            help_message = '''
            __**Commands**__:
 
             **1)** Last Pinned Message:
@@ -338,15 +377,14 @@ async def on_message(message):
 
             **4** React Count:
             Usage: +setreactcount <integer>
-            Permission: Must be an administrator/guild owner or have the manage_messages permission.
-            Purpose: Set the count for which '📌' reacts will pin a message, default value is {}
+            Permission: Must be an administrator, guild owner or have the manage messages permission.
+            Purpose: Sets the number of 📌 to pin am essage, default is value is {}.
           '''.format(7)
-                emb = discord.Embed(description=help_message, color=0x7289da)
+            emb = discord.Embed(description=help_message, color=0x7289da)
+            try:
                 await message.channel.send(embed=emb)
-
-            except:
-                await error(message, 'Pin Archiver does not have permission to send messages in {}'.format(message.channel))
-
+            except discord.errors.Forbidden:
+                await insufficient_perms(message, 'Pin Archiver does not have permission to send messages in #{}'.format(message.channel))
 
 def try_config(config, heading, key):
     """Attempt to extract config[heading][key], with error handling.
@@ -383,6 +421,7 @@ if __name__ == "__main__":
     config.read(args.config)
     try:
         TOKEN = try_config(config, "IDs", "Token")
+        DBLTOKEN = try_config(config, "IDs", "DBLToken")
     except KeyError:
         sys.exit(1)
 
