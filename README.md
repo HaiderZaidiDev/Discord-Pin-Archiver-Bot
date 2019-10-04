@@ -10,7 +10,7 @@ If you require assistance in any means regardng the bot, feel free to join the [
 Pin Archiver has the following features:
 - Archives pinned messages to an archive channel, this message is an embed which:
   - Displays the author of the message and their profile picture.
-  - Displays the channel in which the message was sent in.
+  - Displays the channel in which the message was sent in and the time at which it was sent.
   - A hyper-link to jump to the chat location of the message.
 - Allows channels to exceed the maximum pin limit (50), by deleting the oldest pinned message once the maximum has been reached.
 - Creates an archive channel named 'pin-archive' upon joining the server if one hasn't been found upon pinning a message or when the bot joins the server.
