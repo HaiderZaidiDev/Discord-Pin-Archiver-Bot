@@ -19,19 +19,6 @@ config = None
 TOKEN = None
 DBLTOKEN = None
 
-async def guild_count_update():
-    """Updates server count on Discord Bot List/TOP.GG every 30 minutes"""
-    try:
-        API_ENDPOINT = "https://top.gg/api/bots/{}/stats".format(client.user.id)
-        data = {'server_count': len(client.guilds)}
-        headers = {"Authorization": DBLTOKEN}
-        requests.post(url = API_ENDPOINT, data = data, headers=headers)
-        logging.info('Successfully posted guild count to DBL, {} servers.'.format(len(client.guilds)))
-    except Exception as e:
-        logging.exception('Failed to post guild count to DBL - Error: {}'.format(e))
-    await asyncio.sleep(1800)
-    await guild_count_update()
-
 async def error(message, error_message):
     emb = discord.Embed(
         description ='Error: {}'.format(error_message),
@@ -425,7 +412,6 @@ if __name__ == "__main__":
     config.read(args.config)
     try:
         TOKEN = try_config(config, "IDs", "Token")
-        DBLTOKEN = try_config(config, "IDs", "DBLToken")
     except KeyError:
         sys.exit(1)
 
